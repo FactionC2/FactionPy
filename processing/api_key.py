@@ -26,7 +26,13 @@ def new_api_key(api_key_type, user_id, owner_id=None):
 
     db.session.add(api_key)
     db.session.commit()
-    return api_key
+    return {
+        "Name": api_key.Name,
+        "Enabled": api_key.Enabled,
+        "Visible": api_key.Visible,
+        "Created": api_key.Created,
+        "Token": token
+    }
 
 
 def get_api_key(api_key_id='all'):

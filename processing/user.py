@@ -1,15 +1,8 @@
-from datetime import datetime, timedelta
-from sqlalchemy import func
 import bcrypt
-
+from datetime import datetime
 from backend.database import db
-
 from models.user import User
-from models.api_key import ApiKey
-
-from processing.user_role import get_role_id, get_role_name
-from processing.api_key import new_api_key
-
+from processing.user_role import get_role_id
 from logger import log
 
 
@@ -30,6 +23,14 @@ def get_user(user_id='all', include_hidden=False):
             if user.Username.lower() != 'system':
                 results.append(user)
     return results
+
+
+def get_user_id(username):
+    user = db.session.query(User).filter_by(Username=username.lower()).first()
+    if user:
+        return user.Id
+    else:
+        return None
 
 
 def create_user(username, password, role_name):

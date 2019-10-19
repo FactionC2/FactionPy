@@ -1,15 +1,17 @@
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+
 from factionpy.backend.database import db
 
 
-class StagingResponse(db.Model):
+class StagingResponse(db.Base):
     __tablename__ = "StagingResponse"
-    Id = db.Column(db.Integer, primary_key=True)
-    AgentId = db.Column(db.Integer, db.ForeignKey('Agent.Id'), nullable=False)
-    StagingMessageId = db.Column(db.Integer, db.ForeignKey('StagingMessageId.Id'), nullable=False)
-    IV = db.Column(db.String)
-    HMAC = db.Column(db.String)
-    Message = db.Column(db.String)
-    Sent = db.Column(db.Boolean)
+    Id = Column(Integer, primary_key=True)
+    AgentId = Column(Integer, ForeignKey('Agent.Id'), nullable=False)
+    StagingMessageId = Column(Integer, ForeignKey('StagingMessageId.Id'), nullable=False)
+    IV = Column(String)
+    HMAC = Column(String)
+    Message = Column(String)
+    Sent = Column(Boolean)
 
     def __repr__(self):
         return '<StagingResponse: %s>' % str(self.Id)

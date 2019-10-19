@@ -1,12 +1,15 @@
+from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
+
 from factionpy.backend.database import db
 
 
-class AgentTypeConfiguration(db.Model):
+class AgentTypeConfiguration(db.Base):
     __tablename__ = "AgentTypeConfiguration"
-    Id = db.Column(db.Integer, primary_key=True)
-    Name = db.Column(db.String)
-    AgentTypeId = db.Column(db.Integer, db.ForeignKey('AgentType.Id'), nullable=False)
-    Payloads = db.relationship('Payload', backref='AgentTypeConfiguration', lazy=True)
+    Id = Column(Integer, primary_key=True)
+    Name = Column(String)
+    AgentTypeId = Column(Integer, ForeignKey('AgentType.Id'), nullable=False)
+    Payloads = relationship('Payload', backref='AgentTypeConfiguration', lazy=True)
 
     def __repr__(self):
         if self.Name:

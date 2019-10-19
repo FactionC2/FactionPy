@@ -1,13 +1,15 @@
+from sqlalchemy import Column, DateTime, Integer, String
+
 from factionpy.backend.database import db
 
 
-class ErrorMessage(db.Model):
+class ErrorMessage(db.Base):
     __tablename__ = "ErrorMessage"
-    Id = db.Column(db.Integer, primary_key=True)
-    Source = db.Column(db.String)
-    Message = db.Column(db.String)
-    Details = db.Column(db.String)
-    Timestamp = db.Column(db.DateTime)
+    Id = Column(Integer, primary_key=True)
+    Source = Column(String)
+    Message = Column(String)
+    Details = Column(String)
+    Timestamp = Column(DateTime)
 
     def __repr__(self):
         return '<ErrorMessage: {0} - {1}>'.format(self.Source, self.Message)

@@ -1,16 +1,17 @@
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
 from factionpy.backend.database import db
 
 
-class AgentTaskMessage(db.Model):
+class AgentTaskMessage(db.Base):
     __tablename__ = "AgentTaskMessage"
-    Id = db.Column(db.Integer, primary_key=True)
-    AgentId = db.Column(db.Integer, db.ForeignKey('Agent.Id'))
-    AgentTaskId = db.Column(db.Integer, db.ForeignKey('AgentTask.Id'))
-    IV = db.Column(db.String)
-    HMAC = db.Column(db.String)
-    Message = db.Column(db.String)
-    Sent = db.Column(db.Boolean)
-    Created = db.Column(db.DateTime)
+    Id = Column(Integer, primary_key=True)
+    AgentId = Column(Integer, ForeignKey('Agent.Id'))
+    AgentTaskId = Column(Integer, ForeignKey('AgentTask.Id'))
+    IV = Column(String)
+    HMAC = Column(String)
+    Message = Column(String)
+    Sent = Column(Boolean)
+    Created = Column(DateTime)
 
     def __repr__(self):
         return '<TaskMessage: %s>' % str(self.Id)

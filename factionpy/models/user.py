@@ -1,27 +1,28 @@
 import bcrypt
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, LargeBinary
+from sqlalchemy.orm import relationship
 
 from factionpy.logger import log
 from factionpy.backend.database import db
-
 from factionpy.models.api_key import ApiKey
 from factionpy.models.console_message import ConsoleMessage
+from factionpy.models.faction_file import FactionFile
 
 
 class User(db.Base):
     __tablename__ = "User"
-    Id = db.Column(db.Integer, primary_key=True)
-    Username = db.Column(db.String, unique=True)
-    Password = db.Column(db.LargeBinary)
-    RoleId = db.Column(db.Integer, db.ForeignKey('UserRole.Id'), nullable=False)
-    ApiKeys = db.relationship("ApiKey", backref='User', lazy=True)
-    Authenticated = db.Column(db.Boolean, default=False)
-    ConsoleMessages = db.relationship("ConsoleMessage", backref='User', lazy=True)
-    Files = db.relationship("FactionFile", backref='User', lazy=True)
-    Created = db.Column(db.DateTime)
-    LastLogin = db.Column(db.DateTime)
-    Enabled = db.Column(db.Boolean)
-    Visible = db.Column(db.Boolean)
-
+    Id = Column(Integer, primary_key=True)
+    Username = Column(String, unique=True)
+    Password = Column(LargeBinary)
+    RoleId = Column(Integer, ForeignKey('UserRole.Id'), nullable=False)
+    ApiKeys = relationship("ApiKey", backref='User', lazy=True)
+    Authenticated = Column(Boolean, default=False)
+    ConsoleMessages = relationship("ConsoleMessage", backref='User', lazy=True)
+    Files = relationship("FactionFile", backref='User', lazy=True)
+    Created = Column(DateTime)
+    LastLogin = Column(DateTime)
+    Enabled = Column(Boolean)
+    Visible = Column(Boolean)
 
     def is_active(self):
         """True, as all users are active."""
@@ -40,25 +41,25 @@ class User(db.Base):
         return False
 
     def change_password(self, current_password, new_password):
-        log("change_password", "Got password change request")
+        log("change_password", "Got password change request", "debug")
         if bcrypt.checkpw(current_password.encode('utf-8'), self.Password) and self.Enabled:
             self.Password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
             db.session.add(self)
             db.session.commit()
-            log("change_password", "Password changed")
+            log("change_password", "Password changed", "debug")
             return dict({
                 "Success": True,
                 "Message": 'Changed password for user: {0}'.format(self.Username)
             })
-        log("change_password", "Current password incorrect")
+        log("change_password", "Current password incorrect", "debug")
         return {
-            'Success':False,
-            'Message':'Invalid username or password.'
+            'Success': False,
+            'Message': 'Invalid username or password.'
         }
 
     def get_api_keys(self):
         api_keys = self.ApiKeys
-        log("get_api_keys", "Got api keys: {0}".format(str(api_keys)))
+        log("get_api_keys", "Got api keys: {0}".format(str(api_keys)), "debug")
         results = []
         for api_key in api_keys:
             result = dict()
@@ -73,8 +74,8 @@ class User(db.Base):
                 result['LastUsed'] = api_key.LastUsed.isoformat()
             results.append(result)
         return {
-            'Success':True,
-            'Results':results
+            'Success': True,
+            'Results': results
         }
 
     def delete_api_key(self, api_key_id):
@@ -84,10 +85,10 @@ class User(db.Base):
                 db.session.delete(api_key)
                 db.session.commit()
                 return {
-                    'Success':True,
-                    'Message':"Api Key {0} deleted".format(api_key.Name)
+                    'Success': True,
+                    'Message': "Api Key {0} deleted".format(api_key.Name)
                 }
         return {
-            'Success':False,
-            'Message':"Api Key ID: {0} not found".format(api_key_id)
-            }
+            'Success': False,
+            'Message': "Api Key ID: {0} not found".format(api_key_id)
+        }

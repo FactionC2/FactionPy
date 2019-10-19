@@ -1,16 +1,20 @@
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
+
 from factionpy.backend.database import db
+from factionpy.models.ioc import IOC
 
 
-class AgentTaskUpdate(db.Model):
+class AgentTaskUpdate(db.Base):
     __tablename__ = "AgentTaskUpdate"
-    Id = db.Column(db.Integer, primary_key=True)
-    AgentId = db.Column(db.Integer, db.ForeignKey('Agent.Id'))
-    TaskId = db.Column(db.Integer, db.ForeignKey('AgentTask.Id'))
-    Message = db.Column(db.String)
-    Complete = db.Column(db.Boolean)
-    Success = db.Column(db.Boolean)
-    Received = db.Column(db.DateTime)
-    IOCs = db.relationship("IOC", backref='AgentTaskUpdate', lazy=True)
+    Id = Column(Integer, primary_key=True)
+    AgentId = Column(Integer, ForeignKey('Agent.Id'))
+    TaskId = Column(Integer, ForeignKey('AgentTask.Id'))
+    Message = Column(String)
+    Complete = Column(Boolean)
+    Success = Column(Boolean)
+    Received = Column(DateTime)
+    IOCs = relationship("IOC", backref='AgentTaskUpdate', lazy=True)
 
     def __repr__(self):
         return '<AgentTaskUpdate: %s>' % str(self.Id)

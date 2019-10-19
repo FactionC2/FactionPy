@@ -1,15 +1,18 @@
+from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
+
 from factionpy.backend.database import db
 
 
-class AgentTransportType(db.Model):
+class AgentTransportType(db.Base):
     __tablename__ = "AgentTransportType"
-    Id = db.Column(db.Integer, primary_key=True)
-    Name = db.Column(db.String)
-    TransportTypeGuid = db.Column(db.String)
-    BuildCommand = db.Column(db.String)
-    BuildLocation = db.Column(db.String)
-    AgentTypeId = db.Column(db.Integer, db.ForeignKey('AgentType.Id'), nullable=False)
-    Payloads = db.relationship('Payload', backref='AgentTransportType', lazy=True)
+    Id = Column(Integer, primary_key=True)
+    Name = Column(String)
+    TransportTypeGuid = Column(String)
+    BuildCommand = Column(String)
+    BuildLocation = Column(String)
+    AgentTypeId = Column(Integer, ForeignKey('AgentType.Id'), nullable=False)
+    Payloads = relationship('Payload', backref='AgentTransportType', lazy=True)
 
     def __repr__(self):
         return '<AgentType: %s>' % str(self.Id)

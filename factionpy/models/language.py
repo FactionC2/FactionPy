@@ -1,7 +1,9 @@
+from sqlalchemy import Column, Integer, String
+
 from factionpy.backend.database import db
 
 
-class Language(db.Model):
+class Language(db.Base):
     __tablename__ = "Language"
-    Id = db.Column(db.Integer, primary_key=True)
-    Name = db.Column(db.String)
+    Id = Column(Integer, primary_key=True)
+    Name = Column(String)

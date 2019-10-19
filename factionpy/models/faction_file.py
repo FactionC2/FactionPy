@@ -1,17 +1,19 @@
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
+
 from factionpy.backend.database import db
 
 
-class FactionFile(db.Model):
+class FactionFile(db.Base):
     __tablename__ = "FactionFile"
-    Id = db.Column(db.Integer, primary_key=True)
-    Name = db.Column(db.String)
-    Hash = db.Column(db.String)
-    HashMatch = db.Column(db.Boolean)
-    UserId = db.Column(db.Integer, db.ForeignKey('User.Id'))
-    AgentId = db.Column(db.Integer, db.ForeignKey('Agent.Id'))
-    Created = db.Column(db.DateTime)
-    LastDownloaded = db.Column(db.DateTime)
-    Visible = db.Column(db.Boolean)
+    Id = Column(Integer, primary_key=True)
+    Name = Column(String)
+    Hash = Column(String)
+    HashMatch = Column(Boolean)
+    UserId = Column(Integer, ForeignKey('User.Id'))
+    AgentId = Column(Integer, ForeignKey('Agent.Id'))
+    Created = Column(DateTime)
+    LastDownloaded = Column(DateTime)
+    Visible = Column(Boolean)
 
     def __repr__(self):
         return '<FactionFile: %s>' % str(self.Id)

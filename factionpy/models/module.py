@@ -1,11 +1,13 @@
+from sqlalchemy import Column, ForeignKey, Integer, String
+
 from factionpy.backend.database import db
 
 
-class Module(db.Model):
+class Module(db.Base):
     __tablename__ = "Module"
-    Id = db.Column(db.Integer, primary_key=True)
-    Name = db.Column(db.String)
-    Description = db.Column(db.String)
-    BuildCommand = db.Column(db.String)
-    BuildLocation = db.Column(db.String)
-    LanguageId = db.Column(db.Integer, db.ForeignKey('Language.Id'))
+    Id = Column(Integer, primary_key=True)
+    Name = Column(String)
+    Description = Column(String)
+    BuildCommand = Column(String)
+    BuildLocation = Column(String)
+    LanguageId = Column(Integer, ForeignKey('Language.Id'))

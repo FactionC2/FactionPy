@@ -1,17 +1,19 @@
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
+
 from factionpy.backend.database import db
 
 
-class IOC(db.Model):
+class IOC(db.Base):
     __tablename__ = "IOC"
-    Id = db.Column(db.Integer, primary_key=True)
-    Description = db.Column(db.String)
-    Type = db.Column(db.String)
-    Identifier = db.Column(db.String)
-    Action = db.Column(db.String)
-    Hash = db.Column(db.String)
-    UserId = db.Column(db.Integer, db.ForeignKey('User.Id'))
-    AgentTaskUpdateId = db.Column(db.Integer, db.ForeignKey('AgentTaskUpdate.Id'))
-    Timestamp = db.Column(db.DateTime)
+    Id = Column(Integer, primary_key=True)
+    Description = Column(String)
+    Type = Column(String)
+    Identifier = Column(String)
+    Action = Column(String)
+    Hash = Column(String)
+    UserId = Column(Integer, ForeignKey('User.Id'))
+    AgentTaskUpdateId = Column(Integer, ForeignKey('AgentTaskUpdate.Id'))
+    Timestamp = Column(DateTime)
 
     def __repr__(self):
         return '<IOC: %s>' % str(self.Id)

@@ -27,6 +27,7 @@ def new_api_key(api_key_type, user_id, owner_id=None):
     db.session.add(api_key)
     db.session.commit()
     return {
+        "Id": api_key.Id,
         "Name": api_key.Name,
         "Enabled": api_key.Enabled,
         "Visible": api_key.Visible,
@@ -38,9 +39,9 @@ def new_api_key(api_key_type, user_id, owner_id=None):
 def get_api_key(api_key_id='all'):
     keys = []
     if api_key_id == 'all':
-        keys = ApiKey.query.all()
+        keys = db.session.query(ApiKey).all()
     else:
-        keys.append(ApiKey.query.get(api_key_id))
+        keys.append(db.session.query(ApiKey).get(api_key_id))
 
     for key in keys:
         keys.append(key)

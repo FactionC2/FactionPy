@@ -1,19 +1,20 @@
+from factionpy.backend.database import db
 from factionpy.models.agent import Agent
 from factionpy.logger import log
 
 
 def get_agent(agent_id, include_hidden=False):
-    log("get_agent", "got agent id " + str(agent_id))
+    log("get_agent", "got agent id " + str(agent_id), "debug")
     if agent_id == 'all':
         if include_hidden:
-            agents = Agent.query.all()
+            agents = db.session.query(Agent).all()
         else:
-            agents = Agent.query.filter_by(Visible=True)
+            agents = db.session.query(Agent).filter_by(Visible=True)
         result = []
         for agent in agents:
             result.append(agent)
     else:
-        agent = Agent.query.get(agent_id)
+        agent = db.session.query(Agent).get(agent_id)
         result = agent
     return result
 
@@ -31,6 +32,6 @@ def get_agent(agent_id, include_hidden=False):
 #         "Name": agent.Name,
 #         "Visible": agent.Visible
 #     })
-#     log("update_agent", "sending message: {0}".format(message))
+#     log("update_agent", "sending message: {0}".format(message), "debug")
 #     rabbit_producer.send_request("UpdateAgent", message)
 #     return {"Success": True, "Result": agent_json(agent)}

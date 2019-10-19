@@ -1,12 +1,14 @@
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+
 from factionpy.backend.database import db
 
 
-class CommandParameter(db.Model):
+class CommandParameter(db.Base):
     __tablename__ = "CommandParameter"
-    Id = db.Column(db.Integer, primary_key=True)
-    Name = db.Column(db.String)
-    Help = db.Column(db.String)
-    Required = db.Column(db.Boolean)
-    Position = db.Column(db.Integer)
-    Values = db.Column(db.String)
-    CommandId = db.Column(db.Integer, db.ForeignKey('Command.Id'))
+    Id = Column(Integer, primary_key=True)
+    Name = Column(String)
+    Help = Column(String)
+    Required = Column(Boolean)
+    Position = Column(Integer)
+    Values = Column(String)
+    CommandId = Column(Integer, ForeignKey('Command.Id'))

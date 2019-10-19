@@ -3,11 +3,11 @@ from minio import Minio
 from minio.error import (ResponseError, BucketAlreadyOwnedByYou,
                          BucketAlreadyExists)
 
-from config import MINIO_ACCESSKEY, MINIO_SECRETKEY
+from factionpy.config import get_config_value
 
 minioClient = Minio('minio',
-                    access_key=MINIO_ACCESSKEY,
-                    secret_key=MINIO_SECRETKEY,
+                    access_key=get_config_value('MINIO_ACCESSKEY'),
+                    secret_key=get_config_value('MINIO_SECRETKEY'),
                     secure=True)
 
 

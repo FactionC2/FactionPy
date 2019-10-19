@@ -1,6 +1,6 @@
 import os
 import json
-from logger import log
+from factionpy.logger import log
 
 config_file_path = "/opt/faction/global/config.json"
 
@@ -12,9 +12,8 @@ def get_config():
                 config = json.load(f)
             return config
         except Exception as e:
-            log("config.py", f"Error: {str(e)} - {str(type(e))}")
-            log("config.py", "Could not load config file: {0}".format(config_file_path))
-            exit(1)
+            log("config.py", f"Error: {str(e)} - {str(type(e))}", "debug")
+            log("config.py", "Could not load config file: {0}".format(config_file_path), "debug")
     else:
         try:
             config = dict()
@@ -31,28 +30,15 @@ def get_config():
             config["MINIO_SECRETKEY"] = os.environ["MINIO_SECRETKEY"]
             return config
         except KeyError as e:
-            log("config.py", "Config value not  in environment: {0}".format(str(e)))
-            exit(1)
+            log("config.py", "Config value not  in environment: {0}".format(str(e)), "debug")
         except Exception as e:
-            log("config.py", "Unknown error: {0}".format(str(e)))
-            exit(1)
+            log("config.py", "Unknown error: {0}".format(str(e)), "debug")
 
 
-FACTION_CONFIG = get_config()
-SECRET_KEY = FACTION_CONFIG["FLASK_SECRET"]
-RABBIT_HOST = FACTION_CONFIG["RABBIT_HOST"]
-RABBIT_USERNAME = FACTION_CONFIG["RABBIT_USERNAME"]
-RABBIT_PASSWORD = FACTION_CONFIG["RABBIT_PASSWORD"]
-RABBIT_URL = "amqp://{}:{}@{}:5672/%2F".format(
-    RABBIT_USERNAME, RABBIT_PASSWORD, RABBIT_HOST
-)
-DB_USER = FACTION_CONFIG["POSTGRES_USERNAME"]
-DB_PASSWORD = FACTION_CONFIG["POSTGRES_PASSWORD"]
-DB_HOST = FACTION_CONFIG["POSTGRES_HOST"]
-DB_NAME = FACTION_CONFIG["POSTGRES_DATABASE"]
-DB_URI = "postgresql://{}:{}@{}/{}?client_encoding=utf8".format(
-    DB_USER, DB_PASSWORD, DB_HOST, DB_NAME
-)
-UPLOAD_DIR = FACTION_CONFIG["API_UPLOAD_DIR"]
-MINIO_ACCESSKEY = FACTION_CONFIG["MINIO_ACCESSKEY"]
-MINIO_SECRETKEY = FACTION_CONFIG["MINIO_SECRETKEY"]
+def get_config_value(name):
+    try:
+        config = get_config()
+        return config[name]
+    except Exception as e:
+        log("factionpy:get_config_value", "Could not load value for {0} from config. Error: {1}".format(name, str(e)), "debug")
+        return None

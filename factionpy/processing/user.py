@@ -10,14 +10,14 @@ def get_user(user_id='all', include_hidden=False):
     users = []
     results = []
     if user_id == 'all':
-        log("get_user", "Getting all users")
+        log("get_user", "Getting all users", "debug")
         if include_hidden:
-            users = User.query.all()
+            users = db.session.query(User).all()
         else:
-            users = User.query.filter_by(Visible=True)
+            users = db.session.query(User).filter_by(Visible=True)
     else:
-        log("get_user", "Getting user {0}".format(user_id))
-        users.append(User.query.get(user_id))
+        log("get_user", "Getting user {0}".format(user_id), "debug")
+        users.append(db.session.query(User).get(user_id))
     if users:
         for user in users:
             if user.Username.lower() != 'system':
@@ -41,8 +41,6 @@ def create_user(username, password, role_name):
     user.RoleId = get_role_id(role_name)
     user.Enabled = True
     user.Visible = True
-    print(user.RoleId)
-    print('Creating user %s ' % user.Username)
     db.session.add(user)
     db.session.commit()
     return user

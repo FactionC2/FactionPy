@@ -1,27 +1,32 @@
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
 from factionpy.backend.database import db
+
 from factionpy.models.agent_type_format import AgentTypeFormat
 from factionpy.models.agent_type_architecture import AgentTypeArchitecture
 from factionpy.models.agent_type_configuration import AgentTypeConfiguration
 from factionpy.models.agent_type_operating_system import AgentTypeOperatingSystem
 from factionpy.models.agent_type_version import AgentTypeVersion
 from factionpy.models.agent_transport_type import AgentTransportType
+from factionpy.models.payload import Payload
+from factionpy.models.command import Command
 
 
-class AgentType(db.Model):
+class AgentType(db.Base):
     __tablename__ = "AgentType"
-    Id = db.Column(db.Integer, primary_key=True)
-    Agents = db.relationship('Agent', backref='AgentType', lazy=True)
-    Payloads = db.relationship('Payload', backref='AgentType', lazy=True)
-    AgentTransportTypes = db.relationship('AgentTransportType', backref='AgentType', lazy=True)
-    AgentTypeArchitectures = db.relationship('AgentTypeArchitecture', backref='AgentType', lazy=True)
-    AgentTypeConfigurations = db.relationship('AgentTypeConfiguration', backref='AgentType', lazy=True)
-    AgentTypeFormats = db.relationship('AgentTypeFormat', backref='AgentType', lazy=True)
-    AgentTypeOperatingSystems = db.relationship('AgentTypeOperatingSystem', backref='AgentType', lazy=True)
-    AgentTypeVersions = db.relationship('AgentTypeVersion', backref='AgentType', lazy=True)
-    Payloads = db.relationship('Payload', backref='AgentType', lazy=True)
-    Commands = db.relationship('Command', backref='AgentType', lazy=True)
-    Name = db.Column(db.String)
-    Guid = db.Column(db.String)
+    Id = Column(Integer, primary_key=True)
+    Agents = relationship('Agent', backref='AgentType', lazy=True)
+    Payloads = relationship('Payload', backref='AgentType', lazy=True)
+    AgentTransportTypes = relationship('AgentTransportType', backref='AgentType', lazy=True)
+    AgentTypeArchitectures = relationship('AgentTypeArchitecture', backref='AgentType', lazy=True)
+    AgentTypeConfigurations = relationship('AgentTypeConfiguration', backref='AgentType', lazy=True)
+    AgentTypeFormats = relationship('AgentTypeFormat', backref='AgentType', lazy=True)
+    AgentTypeOperatingSystems = relationship('AgentTypeOperatingSystem', backref='AgentType', lazy=True)
+    AgentTypeVersions = relationship('AgentTypeVersion', backref='AgentType', lazy=True)
+    Payloads = relationship('Payload', backref='AgentType', lazy=True)
+    Commands = relationship('Command', backref='AgentType', lazy=True)
+    Name = Column(String)
+    Guid = Column(String)
 
     def __repr__(self):
         return '<AgentType: %s>' % str(self.Id)

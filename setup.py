@@ -1,17 +1,19 @@
 import os
 import sys
+import shutil
 from setuptools import setup, find_packages
 from factionpy import VERSION
 
+if sys.argv[-1] == 'clean':
+    if os.path.exists("./build"):
+        shutil.rmtree('./build')
+    if os.path.exists("./dist"):
+        shutil.rmtree('./dist')
+    if os.path.exists("./factionpy.egg-info"):
+        shutil.rmtree('./factionpy.egg-info')
 
 # 'setup.py publish' shortcut.
 if sys.argv[-1] == 'publish':
-    if os.path.exists("./build"):
-        os.system('rm -f ./build')
-    if os.path.exists("./dist"):
-        os.system('rm -f ./dist')
-    if os.path.exists("./factionpy.egg-info"):
-        os.system('rm -f ./factionpy.egg-info')
     os.system('python setup.py sdist bdist_wheel')
     os.system('twine upload dist/*')
     sys.exit()

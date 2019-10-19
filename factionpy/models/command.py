@@ -1,5 +1,5 @@
-from backend.database import db
-from models.command_parameter import CommandParameter
+from factionpy.backend.database import db
+from factionpy.models.command_parameter import CommandParameter
 
 
 class Command(db.Model):

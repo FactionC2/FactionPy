@@ -1,4 +1,4 @@
-from backend.database import db
+from factionpy.backend.database import db
 
 
 class CommandParameter(db.Model):

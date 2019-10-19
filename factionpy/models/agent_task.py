@@ -1,4 +1,5 @@
-from backend.database import db
+from factionpy.backend.database import db
+
 
 # Even though the API doesn't handle tasks (Core does that), we need to define this model
 # so we can have an agent object thats inline with the DB
@@ -13,8 +14,5 @@ class AgentTask(db.Model):
     Command = db.Column(db.String)
     Created = db.Column(db.DateTime)
 
-
     def __repr__(self):
         return '<Task: %s>' % str(self.Id)
-
-

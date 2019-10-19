@@ -1,4 +1,5 @@
-from backend.database import db
+from factionpy.backend.database import db
+
 
 class FactionFile(db.Model):
     __tablename__ = "FactionFile"
@@ -14,5 +15,3 @@ class FactionFile(db.Model):
 
     def __repr__(self):
         return '<FactionFile: %s>' % str(self.Id)
-
-

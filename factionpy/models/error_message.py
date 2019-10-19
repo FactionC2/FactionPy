@@ -1,4 +1,4 @@
-from backend.database import db
+from factionpy.backend.database import db
 
 
 class ErrorMessage(db.Model):
@@ -11,5 +11,3 @@ class ErrorMessage(db.Model):
 
     def __repr__(self):
         return '<ErrorMessage: {0} - {1}>'.format(self.Source, self.Message)
-
-

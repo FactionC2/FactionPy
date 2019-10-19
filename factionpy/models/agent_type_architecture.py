@@ -1,4 +1,4 @@
-from backend.database import db
+from factionpy.backend.database import db
 
 
 class AgentTypeArchitecture(db.Model):
@@ -13,6 +13,3 @@ class AgentTypeArchitecture(db.Model):
             return '<AgentTypeArchitecture: %s>' % self.Name
         else:
             return '<AgentTypeArchitecture: %s>' % str(self.Id)
-
-
-

@@ -1,5 +1,5 @@
-from models.agent import Agent
-from logger import log
+from factionpy.models.agent import Agent
+from factionpy.logger import log
 
 
 def get_agent(agent_id, include_hidden=False):

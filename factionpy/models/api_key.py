@@ -1,7 +1,4 @@
-import bcrypt
-import secrets
-from datetime import datetime
-from backend.database import db
+from factionpy.backend.database import db
 
 
 class ApiKey(db.Model):
@@ -20,5 +17,3 @@ class ApiKey(db.Model):
 
     def __repr__(self):
         return '<ApiKey: %s>' % str(self.Id)
-
-

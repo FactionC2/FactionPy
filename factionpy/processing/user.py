@@ -1,9 +1,9 @@
 import bcrypt
 from datetime import datetime
-from backend.database import db
-from models.user import User
-from processing.user_role import get_role_id
-from logger import log
+from factionpy.backend.database import db
+from factionpy.models.user import User
+from factionpy.processing.user_role import get_role_id
+from factionpy.logger import log
 
 
 def get_user(user_id='all', include_hidden=False):

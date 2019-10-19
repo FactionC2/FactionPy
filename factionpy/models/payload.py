@@ -1,5 +1,5 @@
-from backend.database import db
-from models.staging_message import StagingMessage
+from factionpy.backend.database import db
+from factionpy.models.staging_message import StagingMessage
 
 
 class Payload(db.Model):
@@ -34,4 +34,4 @@ class Payload(db.Model):
     Visible = db.Column(db.Boolean)
 
     def __repr__(self):
-            return '<Payload: %s>' % str(self.Id)
+        return '<Payload: %s>' % str(self.Id)

@@ -1,4 +1,5 @@
-from backend.database import db
+from factionpy.backend.database import db
+
 
 class AgentTaskUpdate(db.Model):
     __tablename__ = "AgentTaskUpdate"

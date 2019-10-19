@@ -1,4 +1,4 @@
-from backend.database import db
+from factionpy.backend.database import db
 
 
 class AgentTypeVersion(db.Model):
@@ -13,6 +13,3 @@ class AgentTypeVersion(db.Model):
             return '<AgentTypeVersion: %s>' % self.Name
         else:
             return '<AgentTypeVersion: %s>' % str(self.Id)
-
-
-

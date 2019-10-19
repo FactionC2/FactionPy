@@ -1,8 +1,8 @@
-from backend.database import db
-from models.transport import Transport
-from models.module import Module
-from models.agent_type import AgentType
-from models.agent_task import AgentTask
+from factionpy.backend.database import db
+from factionpy.models.transport import Transport
+from factionpy.models.module import Module
+from factionpy.models.agent_type import AgentType
+from factionpy.models.agent_task import AgentTask
 
 AgentsTransportsXREF = db.Table('AgentsTransportsXREF',
     db.Column('AgentId', db.Integer, db.ForeignKey('Agent.Id'), primary_key=True),
@@ -47,6 +47,3 @@ class Agent(db.Model):
             return '<Agent: %s>' % self.Name
         else:
             return '<Agent: %s>' % str(self.Id)
-
-
-

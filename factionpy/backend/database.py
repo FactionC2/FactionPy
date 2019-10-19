@@ -1,8 +1,12 @@
 from time import sleep
 import psycopg2
-from flask_sqlalchemy import SQLAlchemy
-from logger import log
-from config import DB_URI
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, String, LargeBinary, DateTime, Boolean, ForeignKey
+from sqlalchemy.orm import relationship
+from factionpy.logger import log
+from factionpy.config import DB_URI
 
 db_connected = False
 log("database.py", "Checking Database..")
@@ -19,4 +23,19 @@ while not db_connected:
         sleep(5)
 
 log("database.py", "Configuring DB object..")
-db = SQLAlchemy()
+
+
+class DBClient:
+    engine = create_engine(DB_URI)
+    session = sessionmaker(bind=engine)
+    Base = declarative_base()
+    Column = Column,
+    String = String,
+    LargeBinary = LargeBinary,
+    DateTime = DateTime,
+    Boolean = Boolean,
+    ForeignKey = ForeignKey,
+    relationship = relationship
+
+
+db = DBClient()

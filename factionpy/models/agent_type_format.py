@@ -1,4 +1,4 @@
-from backend.database import db
+from factionpy.backend.database import db
 
 
 class AgentTypeFormat(db.Model):
@@ -13,6 +13,3 @@ class AgentTypeFormat(db.Model):
             return '<AgentTypeFormat: %s>' % self.Name
         else:
             return '<AgentTypeFormat: %s>' % str(self.Id)
-
-
-

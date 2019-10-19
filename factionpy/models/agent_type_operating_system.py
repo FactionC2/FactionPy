@@ -1,4 +1,4 @@
-from backend.database import db
+from factionpy.backend.database import db
 
 
 class AgentTypeOperatingSystem(db.Model):
@@ -13,6 +13,3 @@ class AgentTypeOperatingSystem(db.Model):
             return '<AgentTypeOperatingSystem: %s>' % self.Name
         else:
             return '<AgentTypeOperatingSystem: %s>' % str(self.Id)
-
-
-

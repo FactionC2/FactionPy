@@ -1,4 +1,5 @@
-from backend.database import db
+from factionpy.backend.database import db
+
 
 class AgentCheckin(db.Model):
     __tablename__ = "AgentCheckin"
@@ -11,5 +12,3 @@ class AgentCheckin(db.Model):
 
     def __repr__(self):
         return '<AgentCheckin: %s>' % str(self.Id)
-
-

@@ -1,4 +1,4 @@
-from backend.database import db
+from factionpy.backend.database import db
 
 
 class ConsoleMessage(db.Model):
@@ -14,5 +14,3 @@ class ConsoleMessage(db.Model):
 
     def __repr__(self):
         return '<ConsoleCommand: %s>' % str(self.Id)
-
-

@@ -1,4 +1,4 @@
-from backend.database import db
+from factionpy.backend.database import db
 
 
 class IOC(db.Model):
@@ -15,5 +15,3 @@ class IOC(db.Model):
 
     def __repr__(self):
         return '<IOC: %s>' % str(self.Id)
-
-

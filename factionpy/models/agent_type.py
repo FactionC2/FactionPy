@@ -1,10 +1,10 @@
-from backend.database import db
-from models.agent_type_format import AgentTypeFormat
-from models.agent_type_architecture import AgentTypeArchitecture
-from models.agent_type_configuration import AgentTypeConfiguration
-from models.agent_type_operating_system import AgentTypeOperatingSystem
-from models.agent_type_version import AgentTypeVersion
-from models.agent_transport_type import AgentTransportType
+from factionpy.backend.database import db
+from factionpy.models.agent_type_format import AgentTypeFormat
+from factionpy.models.agent_type_architecture import AgentTypeArchitecture
+from factionpy.models.agent_type_configuration import AgentTypeConfiguration
+from factionpy.models.agent_type_operating_system import AgentTypeOperatingSystem
+from factionpy.models.agent_type_version import AgentTypeVersion
+from factionpy.models.agent_transport_type import AgentTransportType
 
 
 class AgentType(db.Model):

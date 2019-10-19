@@ -1,24 +1,13 @@
-import base64
 import bcrypt
-import pickle
-from datetime import datetime
 
-from flask import g
-from flask.sessions import SecureCookieSessionInterface
-from flask_login import user_loaded_from_header, user_loaded_from_request
+from factionpy.logger import log
+from factionpy.backend.database import db
 
-from logger import log
-from backend.database import db
-from backend.cache import cache
-from flask import jsonify
-from flask_login import LoginManager
-from models.api_key import ApiKey
-from models.console_message import ConsoleMessage
-
-login_manager = LoginManager()
+from factionpy.models.api_key import ApiKey
+from factionpy.models.console_message import ConsoleMessage
 
 
-class User(db.Model):
+class User(db.Base):
     __tablename__ = "User"
     Id = db.Column(db.Integer, primary_key=True)
     Username = db.Column(db.String, unique=True)
@@ -102,105 +91,3 @@ class User(db.Model):
             'Success':False,
             'Message':"Api Key ID: {0} not found".format(api_key_id)
             }
-
-class ApiSessionInterface(SecureCookieSessionInterface):
-    # Taken from https://flask-login.readthedocs.io/en/latest/#disabling-session-cookie-for-apis
-    # I'm believe this is the proper way to do this since we're an API and don't care about
-    # session cookies.
-
-    def open_session(self, app, request):
-        s = self.get_signing_serializer(app)
-        if s is None:
-            return None
-        else:
-            return self.session_class()
-
-    def should_set_cookie(self, app, session):
-        return False
-
-    def save_session(self, *args, **kwargs):
-        log("user model", "save session called")
-        return
-
-@login_manager.user_loader
-def user_loader(user_id):
-    """Given *user_id*, return the associated User object.
-
-    :param unicode user_id: user_id (email) user to retrieve
-
-    """
-    log("user_loader", "Called for user_id: {0}".format(user_id))
-    """Load user by ID from cache, if not in cache, then cache it."""
-    # make a unique cache key for each user
-    user_key = 'user_{}'.format(user_id)
-    # check if the user_object is cached
-    user_obj = pickle.loads(cache.get(user_key)) if cache.get(user_key) else None
-    if user_obj:
-        return user_obj
-    elif isinstance(user_id, int):
-        user = User.query.get(user_id)
-        user_obj = pickle.dumps(user)
-        cache.set(user_key, user_obj, timeout=3600)
-        return user
-    else:
-        user = User.query.filter_by(Username = user_id).first()
-        user_obj = pickle.dumps(user)
-        cache.set(user_key, user_obj, timeout=3600)
-        return user
-
-@user_loaded_from_header.connect
-def user_loaded_from_header(self, user=None):
-    log("user model", "User loaded from header")
-    g.login_via_header = True
-
-@user_loaded_from_request.connect
-def user_loaded_from_request(self, user=None):
-    log("user model", "User loaded from request")
-    g.login_via_request = True
-
-@login_manager.request_loader
-def load_user_from_request(request):
-    # next, try to login using Basic Auth
-    print('Trying API key lookup')
-    keyid = None
-    secret = None
-
-    try:
-        keyid = request.cookies['AccessKeyId']
-        secret = request.cookies['AccessSecret']
-    except:
-        pass
-    try:
-        auth_header = request.headers.get('Authorization')
-        auth_type, credentials = auth_header.split(' ')
-        decoded_header = base64.b64decode(credentials).decode("utf-8")
-        keyid, secret = decoded_header.split(':')
-    except:
-        pass
-    try:
-        token = request.args.get('token')
-        keyid, secret = token.split(':')
-    except:
-        pass
-    if secret and keyid:
-        print('Got API KEY: {0}'.format(keyid))
-        apiKey = ApiKey.query.filter_by(Name=keyid).first()
-        if apiKey and apiKey.Enabled:
-            if bcrypt.checkpw(secret.encode('utf-8'), apiKey.Key):
-                print('Returning User with Id: {0}'.format(str(apiKey.UserId)))
-                apiKey.LastUsed = datetime.utcnow()
-                db.session.add(apiKey)
-
-                user = User.query.get(apiKey.UserId)
-                user.LastLogin = datetime.utcnow()
-                db.session.add(user)
-                db.session.commit()
-                return user
-        db.session.remove()
-    else:
-        print('Invalid API Key or Secret')
-        db.session.remove()
-    # finally, return None if both methods did not login the user
-    db.session.remove()
-    return None
-

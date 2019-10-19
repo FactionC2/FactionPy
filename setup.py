@@ -32,5 +32,5 @@ setup(
     packages=find_packages(),
     license="MIT",
     classifiers=[],
-    python_requires='>=3.6',
+    python_requires='>=3.6', install_requires=['bcrypt', 'bcrypt', 'bcrypt']
 )

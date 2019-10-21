@@ -10,20 +10,29 @@ from factionpy.config import get_config_value
 
 Base = declarative_base()
 
+# TODO: Dirty hack to make this work outside of docker (the only place its used now). Will have to fix this before we
+#  move API over.
+FACTION_DB_HOSTNAME = "127.0.0.1"
+
 
 class DBClient:
     engine = None
+    host = None
     db_uri = None
     session_init = None
     session = None
 
     def __init__(self):
         db_connected = False
+        if FACTION_DB_HOSTNAME:
+            self.host = FACTION_DB_HOSTNAME
+        else:
+            self.host = get_config_value("POSTGRES_HOST")
 
         if get_config_value("POSTGRES_DATABASE"):
             self.db_uri = "postgresql://{}:{}@{}/{}?client_encoding=utf8".format(
                 get_config_value("POSTGRES_USERNAME"), get_config_value("POSTGRES_PASSWORD"),
-                get_config_value("POSTGRES_HOST"), get_config_value("POSTGRES_DATABASE")
+                self.host, get_config_value("POSTGRES_DATABASE")
             )
             while not db_connected:
                 try:

@@ -1,7 +1,7 @@
 from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import backref, relationship
 
-from factionpy.backend.database import db
+from factionpy.backend.database import Base
 
 from factionpy.models.module import Module
 from factionpy.models.agent_type import AgentType
@@ -10,19 +10,19 @@ from factionpy.models.console_message import ConsoleMessage
 
 
 AgentsTransportsXREF = Table('AgentsTransportsXREF',
-                             db.Base.metadata,
+                             Base.metadata,
                              Column('AgentId', Integer, ForeignKey('Agent.Id'), primary_key=True),
                              Column('TransportId', Integer, ForeignKey('Transport.Id'), primary_key=True)
                              )
 
 AgentModulesXREF = Table('AgentModulesXREF',
-                         db.Base.metadata,
+                         Base.metadata,
                          Column('AgentId', Integer, ForeignKey('Agent.Id'), primary_key=True),
                          Column('ModuleId', Integer, ForeignKey('Module.Id'), primary_key=True)
                          )
 
 
-class Agent(db.Base):
+class Agent(Base):
     __tablename__ = "Agent"
     Id = Column(Integer, primary_key=True)
     Name = Column(String)

@@ -1,10 +1,10 @@
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from factionpy.backend.database import db
+from factionpy.backend.database import Base
 
 
-class AgentTransportType(db.Base):
+class AgentTransportType(Base):
     __tablename__ = "AgentTransportType"
     Id = Column(Integer, primary_key=True)
     Name = Column(String)

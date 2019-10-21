@@ -3,13 +3,15 @@ from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, L
 from sqlalchemy.orm import relationship
 
 from factionpy.logger import log
-from factionpy.backend.database import db
+from factionpy.backend.database import Base, DBClient
 from factionpy.models.api_key import ApiKey
 from factionpy.models.console_message import ConsoleMessage
 from factionpy.models.faction_file import FactionFile
 
+db = DBClient
 
-class User(db.Base):
+
+class User(Base):
     __tablename__ = "User"
     Id = Column(Integer, primary_key=True)
     Username = Column(String, unique=True)

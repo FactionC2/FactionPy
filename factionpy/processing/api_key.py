@@ -2,8 +2,10 @@ import bcrypt
 import secrets
 from datetime import datetime
 
-from factionpy.backend.database import db
+from factionpy.backend.database import DBClient
 from factionpy.models.api_key import ApiKey
+
+db = DBClient()
 
 
 def new_api_key(api_key_type, user_id, owner_id=None):

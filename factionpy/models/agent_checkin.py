@@ -1,9 +1,9 @@
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 
-from factionpy.backend.database import db
+from factionpy.backend.database import Base
 
 
-class AgentCheckin(db.Base):
+class AgentCheckin(Base):
     __tablename__ = "AgentCheckin"
     Id = Column(Integer, primary_key=True)
     AgentId = Column(Integer, ForeignKey('Agent.Id'))

@@ -1,9 +1,9 @@
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
 
-from factionpy.backend.database import db
+from factionpy.backend.database import Base
 
 
-class FactionFile(db.Base):
+class FactionFile(Base):
     __tablename__ = "FactionFile"
     Id = Column(Integer, primary_key=True)
     Name = Column(String)

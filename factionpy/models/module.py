@@ -1,9 +1,9 @@
 from sqlalchemy import Column, ForeignKey, Integer, String
 
-from factionpy.backend.database import db
+from factionpy.backend.database import Base
 
 
-class Module(db.Base):
+class Module(Base):
     __tablename__ = "Module"
     Id = Column(Integer, primary_key=True)
     Name = Column(String)

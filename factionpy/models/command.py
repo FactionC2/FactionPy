@@ -1,10 +1,10 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
-from factionpy.backend.database import db
+from factionpy.backend.database import Base
 from factionpy.models.command_parameter import CommandParameter
 
 
-class Command(db.Base):
+class Command(Base):
     __tablename__ = "Command"
     Id = Column(Integer, primary_key=True)
     Name = Column(String)

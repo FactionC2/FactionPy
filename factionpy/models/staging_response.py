@@ -1,9 +1,9 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 
-from factionpy.backend.database import db
+from factionpy.backend.database import Base
 
 
-class StagingResponse(db.Base):
+class StagingResponse(Base):
     __tablename__ = "StagingResponse"
     Id = Column(Integer, primary_key=True)
     AgentId = Column(Integer, ForeignKey('Agent.Id'), nullable=False)

@@ -1,9 +1,9 @@
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, LargeBinary, String
 
-from factionpy.backend.database import db
+from factionpy.backend.database import Base
 
 
-class ApiKey(db.Base):
+class ApiKey(Base):
     __tablename__ = "ApiKey"
     Id = Column(Integer, primary_key=True)
     UserId = Column(Integer, ForeignKey('User.Id'))

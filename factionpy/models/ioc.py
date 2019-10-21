@@ -1,9 +1,9 @@
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 
-from factionpy.backend.database import db
+from factionpy.backend.database import Base
 
 
-class IOC(db.Base):
+class IOC(Base):
     __tablename__ = "IOC"
     Id = Column(Integer, primary_key=True)
     Description = Column(String)

@@ -1,11 +1,11 @@
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from factionpy.backend.database import db
+from factionpy.backend.database import Base
 
 from factionpy.models.agent import Agent
 
-class Transport(db.Base):
+class Transport(Base):
     __tablename__ = "Transport"
     Id = Column(Integer, primary_key=True)
     Name = Column(String)

@@ -1,9 +1,9 @@
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 
-from factionpy.backend.database import db
+from factionpy.backend.database import Base
 
 
-class ConsoleMessage(db.Base):
+class ConsoleMessage(Base):
     __tablename__ = "ConsoleMessage"
     Id = Column(Integer, primary_key=True)
     AgentId = Column(Integer, ForeignKey('Agent.Id'), nullable=False)

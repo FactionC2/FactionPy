@@ -1,7 +1,9 @@
 import functools
-from factionpy.backend.database import db
+from factionpy.backend.database import DBClient
 from factionpy.models.user_role import UserRole
 from factionpy.logger import log
+
+db = DBClient()
 
 standard_read = [
     'Admin',

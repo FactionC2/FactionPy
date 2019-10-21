@@ -1,9 +1,9 @@
 from sqlalchemy import Column, DateTime, Integer, String
 
-from factionpy.backend.database import db
+from factionpy.backend.database import Base
 
 
-class ErrorMessage(db.Base):
+class ErrorMessage(Base):
     __tablename__ = "ErrorMessage"
     Id = Column(Integer, primary_key=True)
     Source = Column(String)

@@ -1,8 +1,8 @@
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
-from factionpy.backend.database import db
+from factionpy.backend.database import Base
 
 
-class AgentTaskMessage(db.Base):
+class AgentTaskMessage(Base):
     __tablename__ = "AgentTaskMessage"
     Id = Column(Integer, primary_key=True)
     AgentId = Column(Integer, ForeignKey('Agent.Id'))

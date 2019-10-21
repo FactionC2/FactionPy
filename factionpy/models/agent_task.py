@@ -1,13 +1,13 @@
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from factionpy.backend.database import db
+from factionpy.backend.database import Base
 from factionpy.models.agent_task_update import AgentTaskUpdate
 
 
 # Even though the API doesn't handle tasks (Core does that), we need to define this model
 # so we can have an agent object thats inline with the DB
-class AgentTask(db.Base):
+class AgentTask(Base):
     __tablename__ = "AgentTask"
     Id = Column(Integer, primary_key=True)
     Name = Column(String)

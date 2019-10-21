@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
-from factionpy.backend.database import db
+from factionpy.backend.database import Base
 
 from factionpy.models.agent_type_format import AgentTypeFormat
 from factionpy.models.agent_type_architecture import AgentTypeArchitecture
@@ -12,7 +12,7 @@ from factionpy.models.payload import Payload
 from factionpy.models.command import Command
 
 
-class AgentType(db.Base):
+class AgentType(Base):
     __tablename__ = "AgentType"
     Id = Column(Integer, primary_key=True)
     Agents = relationship('Agent', backref='AgentType', lazy=True)

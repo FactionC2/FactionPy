@@ -1,11 +1,11 @@
 from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from factionpy.backend.database import db
+from factionpy.backend.database import Base
 from factionpy.models.staging_message import StagingMessage
 
 
-class Payload(db.Base):
+class Payload(Base):
     __tablename__ = "Payload"
     Id = Column(Integer, primary_key=True)
     Name = Column(String, unique=True)

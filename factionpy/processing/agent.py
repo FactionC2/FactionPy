@@ -1,6 +1,8 @@
-from factionpy.backend.database import db
+from factionpy.backend.database import DBClient
 from factionpy.models.agent import Agent
 from factionpy.logger import log
+
+db = DBClient()
 
 
 def get_agent(agent_id, include_hidden=False):

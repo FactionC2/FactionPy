@@ -1,11 +1,11 @@
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from factionpy.backend.database import db
+from factionpy.backend.database import Base
 from factionpy.models.ioc import IOC
 
 
-class AgentTaskUpdate(db.Base):
+class AgentTaskUpdate(Base):
     __tablename__ = "AgentTaskUpdate"
     Id = Column(Integer, primary_key=True)
     AgentId = Column(Integer, ForeignKey('Agent.Id'))

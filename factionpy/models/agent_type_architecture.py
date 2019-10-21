@@ -1,10 +1,10 @@
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from factionpy.backend.database import db
+from factionpy.backend.database import Base
 
 
-class AgentTypeArchitecture(db.Base):
+class AgentTypeArchitecture(Base):
     __tablename__ = "AgentTypeArchitecture"
     Id = Column(Integer, primary_key=True)
     Name = Column(String)

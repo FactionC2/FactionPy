@@ -1,9 +1,9 @@
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 
-from factionpy.backend.database import db
+from factionpy.backend.database import Base
 
 
-class StagingMessage(db.Base):
+class StagingMessage(Base):
     __tablename__ = "StagingMessage"
     Id = Column(Integer, primary_key=True)
     AgentName = Column(String)

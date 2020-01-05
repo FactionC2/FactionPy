@@ -4,7 +4,6 @@ from sqlalchemy.orm import backref, relationship
 from factionpy.backend.database import Base
 
 from factionpy.models.module import Module
-from factionpy.models.agent_type import AgentType
 from factionpy.models.agent_task import AgentTask
 from factionpy.models.console_message import ConsoleMessage
 

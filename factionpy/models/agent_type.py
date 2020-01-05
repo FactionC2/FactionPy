@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
 from factionpy.backend.database import Base
 
@@ -23,10 +23,12 @@ class AgentType(Base):
     AgentTypeFormats = relationship('AgentTypeFormat', backref='AgentType', lazy=True)
     AgentTypeOperatingSystems = relationship('AgentTypeOperatingSystem', backref='AgentType', lazy=True)
     AgentTypeVersions = relationship('AgentTypeVersion', backref='AgentType', lazy=True)
+    LanguageId = Column(Integer, ForeignKey('Language.Id'), nullable=False)
     Payloads = relationship('Payload', backref='AgentType', lazy=True)
     Commands = relationship('Command', backref='AgentType', lazy=True)
     Name = Column(String)
     Guid = Column(String)
+    Development = Column(Boolean)
 
     def __repr__(self):
         return '<AgentType: %s>' % str(self.Id)

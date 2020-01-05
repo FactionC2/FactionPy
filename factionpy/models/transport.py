@@ -2,8 +2,9 @@ from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 from factionpy.backend.database import Base
-
 from factionpy.models.agent import Agent
+from factionpy.models.payload import Payload
+
 
 class Transport(Base):
     __tablename__ = "Transport"

@@ -2,6 +2,7 @@ from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, St
 from sqlalchemy.orm import relationship
 
 from factionpy.backend.database import Base
+from factionpy.models.agent import Agent
 from factionpy.models.staging_message import StagingMessage
 
 
@@ -16,6 +17,7 @@ class Payload(Base):
     BuildToken = Column(String)
     Filename = Column(String)
 
+    Agents = relationship('Agent', backref='Payload', lazy=True)
     AgentTypeId = Column(Integer, ForeignKey('AgentType.Id'), nullable=False)
     AgentTypeArchitectureId = Column(Integer, ForeignKey('AgentTypeArchitecture.Id'), nullable=False)
     AgentTypeConfigurationId = Column(Integer, ForeignKey('AgentTypeConfiguration.Id'), nullable=False)

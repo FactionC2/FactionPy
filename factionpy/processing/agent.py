@@ -20,7 +20,6 @@ def get_agent(agent_id, include_hidden=False):
         result = agent
     return result
 
-
 # def update_agent(agent_id, agent_name=None, visible=None):
 #     agent = Agent.query.get(agent_id)
 #     if agent_name:

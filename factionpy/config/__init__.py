@@ -17,6 +17,7 @@ def get_config():
     else:
         try:
             config = dict()
+            config["API_ENDPOINT"] = os.environ["API_ENDPOINT"]
             config["API_UPLOAD_DIR"] = os.environ["API_UPLOAD_DIR"]
             config["FLASK_SECRET"] = os.environ["FLASK_SECRET"]
             config["POSTGRES_DATABASE"] = os.environ["POSTGRES_DATABASE"]

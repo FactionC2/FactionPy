@@ -10,6 +10,7 @@ sqlalchemy = "*"
 psycopg2-binary = "*"
 minio = "*"
 certifi = "==2019.9.11"
+gql = "*"
 
 [requires]
 python_version = "3.7"

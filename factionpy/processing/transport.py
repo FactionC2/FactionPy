@@ -1,20 +1,39 @@
-from factionpy.logger import log
-from factionpy.backend.database import DBClient
-from factionpy.models.transport import Transport
-
-db = DBClient()
+from gql import gql
+from factionpy.api import client
 
 
-def create_transport(name, transport_type, guid, api_key_id, configuration):
-    log("transport.py", "Transport Type: {0}".format(transport_type), "debug")
-    log("transport.py", "Guid: {0}".format(guid), "debug")
-    log("transport.py", "API Key ID: {0}".format(api_key_id), "debug")
-    log("transport.py", "Configuration: {0}".format(configuration), "debug")
-    db.session.add(Transport(Name=name,
-                             TransportType=transport_type,
-                             Guid=guid,
-                             ApiKeyId=api_key_id,
-                             Configuration=configuration,
-                             Enabled=True,
-                             Visible=True))
-    db.session.commit()
+def new_create_transport_query(name, transport_type, guid, configuration):
+    query = '''
+mutation {
+  insert_transports(objects: {
+    name: "NAME", 
+    transport_type: "TRANSPORT_TYPE", 
+    guid: "GUID", 
+    configuration: "CONFIGURATION"
+  }) 
+  {
+    returning {
+      id
+      name
+      guid
+      transport_type
+      configuration
+      created
+      last_checkin
+      enabled
+      visible
+    }
+  }
+}
+    '''
+    populated_query = query.replace("NAME", name)\
+        .replace("TRANSPORT_TYPE", transport_type)\
+        .replace("GUID", guid)\
+        .replace("CONFIGURATION", configuration)
+
+    return gql(populated_query)
+
+
+def create_transport(name, transport_type, guid, configuration):
+    query = new_create_transport_query(name, transport_type, guid, configuration)
+    client.execute(query)

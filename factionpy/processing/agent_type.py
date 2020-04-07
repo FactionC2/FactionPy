@@ -12,6 +12,20 @@ from factionpy.models.transport import Transport
 db = DBClient()
 
 
+def new_language_query(name):
+    query = '''
+mutation addLanguage {
+  insert_languages(objects: {name: "NAME"}) {
+    returning {
+      id
+      name
+    }
+  }
+}
+    '''
+    return query.replace("NAME", name)
+
+
 def new_agent_type(name, language_name):
     language = db.session.query(Language).filter_by(Name=language_name).first()
 

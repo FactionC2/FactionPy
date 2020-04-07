@@ -1,2 +1,0 @@
-from gql import gql
-

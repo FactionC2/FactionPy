@@ -1,4 +1,4 @@
-from gql import gql, Client
+from gql import Client
 from gql.transport.requests import RequestsHTTPTransport
 
 from factionpy.config import get_config_value

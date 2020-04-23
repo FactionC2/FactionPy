@@ -6,11 +6,8 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-sqlalchemy = "*"
-psycopg2-binary = "*"
-minio = "*"
-certifi = "==2019.9.11"
 gql = "*"
+pyjwt = "*"
 
 [requires]
 python_version = "3.7"

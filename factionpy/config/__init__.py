@@ -20,11 +20,13 @@ def get_config():
         except Exception as e:
             log("config.py", f"Error: {str(e)} - {str(type(e))}")
             log("config.py", "Could not load config file: {0}".format(config_file_path))
-            exit(1)
+            return None
     else:
         try:
             config = dict()
             config["FLASK_SECRET"] = os.environ["FLASK_SECRET"]
+            config["AUTH_ENDPOINT"] = os.environ["AUTH_ENDPOINT"]
+            config["GRAPHQL_ENDPOINT"] = os.environ["GRAPHQL_ENDPOINT"]
             config["POSTGRES_DATABASE"] = os.environ["POSTGRES_DATABASE"]
             config["POSTGRES_USERNAME"] = os.environ["POSTGRES_USERNAME"]
             config["POSTGRES_PASSWORD"] = os.environ["POSTGRES_PASSWORD"]
@@ -34,10 +36,10 @@ def get_config():
             return config
         except KeyError as e:
             log("config.py", "Config value not  in environment: {0}".format(str(e)))
-            exit(1)
+            return None
         except Exception as e:
             log("config.py", "Unknown error: {0}".format(str(e)))
-            exit(1)
+            return None
 
 
 def get_config_value(name):

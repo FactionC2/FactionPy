@@ -30,7 +30,6 @@ mutation {
         .replace("TRANSPORT_TYPE", transport_type)\
         .replace("GUID", guid)\
         .replace("CONFIGURATION", configuration)
-
     return gql(populated_query)
 
 

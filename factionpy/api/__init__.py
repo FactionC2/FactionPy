@@ -94,7 +94,7 @@ __type(name: "TYPENAME") {
 
         url = QUERY_ENDPOINT
         headers = {"Authorization": f"Bearer {self.api_key}", "content-type": "application/json"}
-        r = requests.post(url, data=populated_query, headers=headers)
+        r = requests.post(url, data=populated_query, headers=headers, verify=False)
         if r.status_code == 200:
             return dict({
                 "success": True,
@@ -107,18 +107,26 @@ __type(name: "TYPENAME") {
             })
 
     def request_api_key(self):
-        auth_url = AUTH_ENDPOINT + "/auth/service/"
-        key = jwt.encode({"service_name": self.service_name}, FACTION_JWT_SECRET, algorithm="HS256")
-        r = requests.get(auth_url, headers={'Authorization': f"Bearer {key}"})
+        auth_url = AUTH_ENDPOINT + "/service/"
+        log("factionpy", f"Authenticating to {auth_url} using JWT secret: {FACTION_JWT_SECRET}")
+        key = jwt.encode({"service_name": self.service_name}, FACTION_JWT_SECRET, algorithm="HS256").decode('utf-8')
+        log("factionpy", f"Encoded secret: {key}")
+
+        r = requests.get(auth_url, headers={'Authorization': f"Bearer {key}"}, verify=False)
         if r.status_code == 200:
             self.api_key = r.json().get("api_key")
             return True
-        return False
+        else:
+            log("request_api_key", f"Could not get API key from {auth_url}. Response: {r.content}", "error")
+            return False
 
     def __init__(self, service_name,
                  retries=3,
                  api_endpoint=GRAPHQL_ENDPOINT,
                  auth_endpoint=AUTH_ENDPOINT):
+        self.service_name = service_name
+        self.auth_endpoint = auth_endpoint
+        self.api_endpoint = api_endpoint
 
         if self.request_api_key():
             api_transport = RequestsHTTPTransport(
@@ -131,8 +139,4 @@ __type(name: "TYPENAME") {
                 verify=False
             )
             super().__init__(retries=retries, transport=api_transport, fetch_schema_from_transport=True)
-            self.service_name = service_name
-            self.auth_endpoint = auth_endpoint
-        else:
-            print(f"Could not get API key for Faction from: {auth_endpoint}")
 

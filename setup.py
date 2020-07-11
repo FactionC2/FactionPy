@@ -34,5 +34,5 @@ setup(
     packages=find_packages(),
     license="MIT",
     classifiers=[],
-    python_requires='>=3.6', install_requires=['bcrypt', 'bcrypt', 'bcrypt']
+    python_requires='>=3.6', install_requires=['bcrypt', 'pyjwt', 'kubernetes', 'gql']
 )

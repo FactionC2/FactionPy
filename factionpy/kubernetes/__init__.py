@@ -16,7 +16,7 @@ def get_ingress_host(namespace="default"):
 def get_secret(secret, data_name, namespace="default"):
     result = v1.read_namespaced_secret(secret, namespace)
     try:
-        return base64.b64decode(result.data[data_name])
+        return base64.b64decode(result.data[data_name]).decode('utf-8')
     except Exception as e:
         log('factionpy', f"Could not get secret named {data_name} from {secret}. Error: {e}", "error")
 

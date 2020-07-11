@@ -8,6 +8,7 @@ verify_ssl = true
 [packages]
 gql = "*"
 pyjwt = "*"
+kubernetes = "*"
 
 [requires]
 python_version = "3.8"

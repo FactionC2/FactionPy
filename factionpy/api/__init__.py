@@ -10,7 +10,7 @@ from factionpy.logger import log
 class FactionClient(Client):
     api_key: None
     auth_endpoint: None
-    service_name: None
+    client_id: None
 
     def get_type_fields(self, type_name):
         query = '''query MyQuery {
@@ -53,7 +53,7 @@ __type(name: "TYPENAME") {
         for field in fields:
             if field["type"]:
                 columns.append(field['name'])
-        key = jwt.encode({"service_name": self.service_name}, FACTION_JWT_SECRET, algorithm="HS256")
+        key = jwt.encode({"service_name": self.client_id}, FACTION_JWT_SECRET, algorithm="HS256")
         webhook_api_key = key
         query = '''{
              "type": "create_event_trigger",
@@ -109,7 +109,7 @@ __type(name: "TYPENAME") {
     def request_api_key(self):
         auth_url = AUTH_ENDPOINT + "/service/"
         log("factionpy", f"Authenticating to {auth_url} using JWT secret: {FACTION_JWT_SECRET}")
-        key = jwt.encode({"service_name": self.service_name}, FACTION_JWT_SECRET, algorithm="HS256").decode('utf-8')
+        key = jwt.encode({"key_name": self.client_id}, FACTION_JWT_SECRET, algorithm="HS256").decode('utf-8')
         log("factionpy", f"Encoded secret: {key}")
 
         r = requests.get(auth_url, headers={'Authorization': f"Bearer {key}"}, verify=False)
@@ -120,11 +120,11 @@ __type(name: "TYPENAME") {
             log("request_api_key", f"Could not get API key from {auth_url}. Response: {r.content}", "error")
             return False
 
-    def __init__(self, service_name,
+    def __init__(self, client_id,
                  retries=3,
                  api_endpoint=GRAPHQL_ENDPOINT,
                  auth_endpoint=AUTH_ENDPOINT):
-        self.service_name = service_name
+        self.client_id = client_id
         self.auth_endpoint = auth_endpoint
         self.api_endpoint = api_endpoint
 

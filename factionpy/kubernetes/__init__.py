@@ -4,9 +4,9 @@ from kubernetes import client, config
 
 KUBERNETES_NAMESPACE = 'factionc2'
 CONNECTED_TO_KUBERNETES = False
-config.load_kube_config()
 
 try:
+    config.load_kube_config()
     v1 = client.CoreV1Api()
     v1b = client.ExtensionsV1beta1Api()
     CONNECTED_TO_KUBERNETES = True

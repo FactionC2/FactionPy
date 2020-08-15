@@ -28,7 +28,6 @@ __type(name: "TYPENAME") {
     }
   }
 }'''.replace("TYPENAME", type_name)
-        log("FactionClient.get_type_fields", query)
         gquery = gql(query)
         result = self.execute(gquery)
         results = []
@@ -108,16 +107,16 @@ __type(name: "TYPENAME") {
 
     def request_api_key(self):
         auth_url = AUTH_ENDPOINT + "/service/"
-        log("factionpy", f"Authenticating to {auth_url} using JWT secret: {FACTION_JWT_SECRET}")
+        log(f"Authenticating to {auth_url} using JWT secret")
         key = jwt.encode({"key_name": self.client_id}, FACTION_JWT_SECRET, algorithm="HS256").decode('utf-8')
-        log("factionpy", f"Encoded secret: {key}")
+        log(f"Encoded secret: {key}", "debug")
 
         r = requests.get(auth_url, headers={'Authorization': f"Bearer {key}"}, verify=False)
         if r.status_code == 200:
             self.api_key = r.json().get("api_key")
             return True
         else:
-            log("request_api_key", f"Could not get API key from {auth_url}. Response: {r.content}", "error")
+            log(f"Error getting api key. Response: {r.content}", "error")
             return False
 
     def __init__(self, client_id,

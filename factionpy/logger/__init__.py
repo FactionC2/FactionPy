@@ -1,12 +1,9 @@
+import os
+import inspect
 import logging
-import logging.config
 
-from os import environ
+import sys
 from datetime import datetime
-
-default_level = logging.INFO
-logging.basicConfig(level=default_level)
-
 
 class bcolors:
     HEADER = '\033[95m'
@@ -20,28 +17,56 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 
-def set_logging_level(level):
-    logging.basicConfig(level=(getattr(logging, level.upper(), default_level)))
-
-
-def get_logging_level(level):
-    return getattr(logging, level.upper())
-
-
 def current_time():
     return datetime.now().strftime("%H:%M:%S")
 
 
-def log(source, message, level="info"):
-    if level == "info":
-        color = bcolors.OKGREEN
-    elif level == "warning":
-        color = bcolors.WARNING
-    elif level == "error":
-        color = bcolors.FAIL
-    elif level == "critical":
-        color = bcolors.FAIL
+FACTION_LOGGING_LEVEL = os.environ.get("FACTION_LOGGING_LEVEL", "info")
+
+logging_level = logging.INFO
+if FACTION_LOGGING_LEVEL.lower() == "warning":
+    logging_level = logging.WARNING
+elif FACTION_LOGGING_LEVEL.lower() == "error":
+    logging_level = logging.ERROR
+elif FACTION_LOGGING_LEVEL.lower() == "critical":
+    logging_level = logging.CRITICAL
+elif FACTION_LOGGING_LEVEL.lower() == "debug":
+    logging_level = logging.DEBUG
+
+
+logger = logging.getLogger("factionpy")
+logger.setLevel(logging_level)
+
+handler = logging.StreamHandler(sys.stdout)
+handler.setLevel(logging_level)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+
+
+def log(message, level="info"):
+    """
+    Takes a string and prints it to stdout all fancy.
+
+    :param message: The message you want printed.
+    :param level: The severity of the message (info, warning, error, critical, debug)
+    :return: None
+    """
+    # get calling function name
+    source = inspect.stack()[1].function
+    formatted_message = f"({source}) {message}"
+    if level.lower() == "info":
+        logger.info(f"{bcolors.OKGREEN}{formatted_message}{bcolors.ENDC}")
+    elif level.lower() == "warning":
+        logger.warning(f"{bcolors.WARNING}{formatted_message}{bcolors.ENDC}")
+    elif level.lower() == "error":
+        logger.error(f"{bcolors.FAIL}{formatted_message}{bcolors.ENDC}")
+    elif level.lower() == "critical":
+        logger.critical(f"{bcolors.FAIL}{formatted_message}{bcolors.ENDC}")
+    elif level.lower() == "debug":
+        logger.debug(f"{bcolors.DEBUG}{formatted_message}{bcolors.ENDC}")
     else:
-        color = bcolors.DEBUG
-    print("{0}[{1}] ({2}) {3}{4}".format(color, current_time(), source, message, bcolors.ENDC))
+        logger.error(f"{bcolors.FAIL}(log) Log called with invalid level: {level}. Valid levels are: info, warning, "
+                     f"error, critical, and debug.{bcolors.ENDC}")
+
 

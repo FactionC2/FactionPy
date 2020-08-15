@@ -1,16 +1,23 @@
 import requests
 from factionpy.config import AUTH_ENDPOINT
+from factionpy.logger import log
 
 
 def validate_authorization_header(header_value):
-    success = False
+    log(f"got header {header_value}", "debug")
+    success = "false"
     result = None
     try:
         headers = {"Authorization": header_value}
-        r = requests.get(f"{AUTH_ENDPOINT}/verify/", headers=headers).json()
-        if r['success'] == "True":
-            success = True
+        url = f"{AUTH_ENDPOINT}/verify/"
+        log(f"using url: {url}", "debug")
+        r = requests.get(url, headers=headers).json()
+        log(f"got response {r}", "debug")
+        if r['success'] == "true":
+            success = "true"
             result = r
     except Exception as e:
         result = e
-    return {"success": success, "result": result}
+    rsp = {"success": success, "result": result}
+    log(f"returning: {rsp}", "debug")
+    return rsp

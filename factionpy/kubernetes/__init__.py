@@ -11,7 +11,7 @@ try:
     v1b = client.ExtensionsV1beta1Api()
     CONNECTED_TO_KUBERNETES = True
 except Exception as e:
-    log("factionpy", f"Could not create Kubernetes clients. This may not be a big deal or it might be. Error: {e}",
+    log(f"Could not create Kubernetes clients. This may not be a big deal or it might be. Error: {e}",
         "warning")
 
 
@@ -28,6 +28,6 @@ def get_secret(secret, data_name):
         try:
             return base64.b64decode(result.data[data_name]).decode('utf-8')
         except Exception as e:
-            log('factionpy', f"Could not get secret named {data_name} from {secret}. Error: {e}", "error")
+            log(f"Error retrieving secret: {e}", "error")
     return None
 

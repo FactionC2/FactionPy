@@ -64,7 +64,7 @@ def log(message, level="info"):
     elif level.lower() == "critical":
         logger.critical(f"{bcolors.FAIL}{formatted_message}{bcolors.ENDC}")
     elif level.lower() == "debug":
-        logger.debug(f"{bcolors.DEBUG}{formatted_message}{bcolors.ENDC}")
+        logger.debug(f"{bcolors.OKBLUE}{formatted_message}{bcolors.ENDC}")
     else:
         logger.error(f"{bcolors.FAIL}(log) Log called with invalid level: {level}. Valid levels are: info, warning, "
                      f"error, critical, and debug.{bcolors.ENDC}")

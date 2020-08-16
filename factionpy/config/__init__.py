@@ -2,6 +2,8 @@ import os
 from factionpy.kubernetes import CONNECTED_TO_KUBERNETES, get_secret, get_ingress_host
 from factionpy.logger import log
 
+HOST = None
+
 if CONNECTED_TO_KUBERNETES:
     log(f"Pulling config from Kubernetes")
     HOST = get_ingress_host()
@@ -11,7 +13,12 @@ if CONNECTED_TO_KUBERNETES:
     FACTION_JWT_SECRET = get_secret("auth-secrets", "jwt-secret")
 else:
     log(f"Using hardcoded config")
-    QUERY_ENDPOINT = f"http://faction-hasura:8080/api/v1/query"
-    GRAPHQL_ENDPOINT = f"http://faction-hasura:8080/api/v1/graphql"
+    QUERY_ENDPOINT = f"http://faction-hasura:8080/v1/query"
+    GRAPHQL_ENDPOINT = f"http://faction-hasura:8080/v1/graphql"
     AUTH_ENDPOINT = f"http://faction-auth:5000"
     FACTION_JWT_SECRET = os.environ.get("FACTION_JWT_SECRET", None)
+
+log(f"config value QUERY_ENDPOINT:\t {QUERY_ENDPOINT}", "debug")
+log(f"config value GRAPHQL_ENDPOINT:\t {GRAPHQL_ENDPOINT}", "debug")
+log(f"config value AUTH_ENDPOINT:\t {AUTH_ENDPOINT}", "debug")
+log(f"config value FACTION_JWT_SECRET:\t {FACTION_JWT_SECRET}", "debug")

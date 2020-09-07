@@ -1,17 +1,36 @@
 import os
-from flask import request, has_request_context, _request_ctx_stack
-from werkzeug.local import LocalProxy
+from time import sleep
 
-from factionpy.logger import log
-from factionpy.api import FactionClient
+from flask import request, has_request_context, _request_ctx_stack
+
+from factionpy.logger import log, error_out
+from factionpy.client import FactionClient
 from factionpy.services import validate_authorization_header
 from factionpy.config import QUERY_ENDPOINT, GRAPHQL_ENDPOINT, AUTH_ENDPOINT, FACTION_JWT_SECRET
 
 
 class FactionApp(object):
-    def __init__(self, app_name: str, app: object):
+    def __init__(self, app_name: str, app: object, retries=5):
+        """
+        Creates a Faction app for Flask.
+        :param app_name: The name of your application. This is used for tracking API authentication requests
+        :param app: Your Flask app object
+        :param retries: The number of times to attempt to create a Faction client. Default is 5.
+        """
         self.current_user = User()
-        self.client = FactionClient(app_name)
+        self.client = None
+
+        attempts = 0
+        while self.client is None and attempts <= retries:
+            try:
+                self.client = FactionClient(app_name)
+            except Exception as e:
+                log(f"Error creating faction client. Attempt {attempts} of {retries}. Error: {e}")
+                sleep(3)
+
+        if self.client is None:
+            log(f"Could not create Faction client", "error")
+
         if app is not None:
             self.init_app(app)
 

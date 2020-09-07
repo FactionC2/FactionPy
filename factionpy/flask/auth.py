@@ -41,6 +41,8 @@ class authorized_groups(object):
         def callable(*args, **kwargs):
             log(f"Current user: {current_user.username}")
             groups = self.groups
+            authorized = False
+
             if current_user.enabled:
                 try:
                     # Replace meta group names with contents of meta group
@@ -57,13 +59,19 @@ class authorized_groups(object):
 
                     # Iterate through valid groups, checking if the user is in there.
                     if current_user.role in groups:
-                        log(f"user authorized. returning results of function.", "debug")
-                        return func(*args, **kwargs)
+                        authorized = True
                     else:
                         log(f"User {current_user.username} is not in the following groups: {groups}")
                 except Exception as e:
                     log(f"Could not verify user_data. Error: {e}", "error")
                     pass
+                if authorized:
+                    try:
+                        log(f"user authorized. returning results of function.", "debug")
+                        return func(*args, **kwargs)
+                    except Exception as e:
+                        log(f"Error executing function: {e}", "error")
+                        pass
             return {
                 "success": "false",
                 "message": f"Invalid API key provided or you do not have permission to perform this action."

@@ -70,3 +70,10 @@ def log(message, level="info"):
                      f"error, critical, and debug.{bcolors.ENDC}")
 
 
+def error_out(message: str):
+    log(message, "error")
+    return {
+        "success": False,
+        "message": message
+    }
+

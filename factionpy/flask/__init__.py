@@ -20,12 +20,13 @@ class FactionApp(object):
         self.current_user = User()
         self.client = None
 
-        attempts = 0
+        attempts = 1
         while self.client is None and attempts <= retries:
             try:
                 self.client = FactionClient(app_name)
             except Exception as e:
                 log(f"Error creating faction client. Attempt {attempts} of {retries}. Error: {e}")
+                attempts += 1
                 sleep(3)
 
         if self.client is None:

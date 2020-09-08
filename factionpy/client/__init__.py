@@ -1,3 +1,5 @@
+from time import sleep
+
 import jwt
 import requests
 from gql import Client, gql
@@ -12,6 +14,7 @@ class FactionClient(Client):
     api_key: None
     auth_endpoint: None
     client_id: None
+    retries: 5
     headers: {}
 
     def _request_api_key(self):
@@ -20,18 +23,23 @@ class FactionClient(Client):
         key = jwt.encode({"key_name": self.client_id}, FACTION_JWT_SECRET, algorithm="HS256").decode('utf-8')
         log(f"Encoded secret: {key}", "debug")
 
-        r = requests.get(auth_url, headers={'Authorization': f"Bearer {key}"}, verify=False)
-        if r.status_code == 200:
-            self.api_key = r.json().get("api_key")
-            self.headers = {
-                "Content-type": "application/json",
-                "Authorization": f"Bearer {self.api_key}"
-            }
-            return True
-        else:
-            log(f"Error getting api key. Response: {r.content}", "error")
-            return False
-
+        attempts = 1
+        while self.api_key is None and attempts <= self.retries:
+            try:
+                r = requests.get(auth_url, headers={'Authorization': f"Bearer {key}"}, verify=False)
+                if r.status_code == 200:
+                    self.api_key = r.json().get("api_key")
+                    self.headers = {
+                        "Content-type": "application/json",
+                        "Authorization": f"Bearer {self.api_key}"
+                    }
+                else:
+                    log(f"Error getting api key. Response: {r.content}", "error")
+            except Exception as e:
+                log(f"Failed to get API key. Attempt {attempts} of {self.retries}. Error {e}")
+                attempts += 1
+                sleep(3)
+                
     def _get_type_fields(self, type_name: str):
         query = '''query MyQuery {
 __type(name: "TYPENAME") {

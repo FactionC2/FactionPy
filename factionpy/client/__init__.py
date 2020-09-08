@@ -39,7 +39,7 @@ class FactionClient(Client):
                 log(f"Failed to get API key. Attempt {attempts} of {self.retries}. Error {e}")
                 attempts += 1
                 sleep(3)
-                
+
     def _get_type_fields(self, type_name: str):
         query = '''query MyQuery {
 __type(name: "TYPENAME") {

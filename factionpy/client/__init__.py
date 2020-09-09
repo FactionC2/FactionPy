@@ -14,7 +14,7 @@ class FactionClient(Client):
     api_key: None
     auth_endpoint: None
     client_id: None
-    retries: 5
+    retries: 20
     headers: {}
 
     def _request_api_key(self):
@@ -166,6 +166,8 @@ __type(name: "TYPENAME") {
         self.client_id = client_id
         self.auth_endpoint = auth_endpoint
         self.api_endpoint = api_endpoint
+        self.api_key = None
+        self.retries = retries
 
         if self._request_api_key():
             api_transport = RequestsHTTPTransport(

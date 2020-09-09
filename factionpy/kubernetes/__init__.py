@@ -2,7 +2,7 @@ import base64
 from factionpy.logger import log
 from kubernetes import client, config
 
-KUBERNETES_NAMESPACE = 'factionc2'
+KUBERNETES_NAMESPACE = 'default'
 CONNECTED_TO_KUBERNETES = False
 
 try:

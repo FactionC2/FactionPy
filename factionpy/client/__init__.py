@@ -10,7 +10,7 @@ from factionpy.files import upload_file
 from factionpy.logger import log, error_out
 
 
-class FactionClient(Client):
+class FactionClient:
     api_key: None
     auth_endpoint: None
     client_id: None
@@ -33,12 +33,14 @@ class FactionClient(Client):
                         "Content-type": "application/json",
                         "Authorization": f"Bearer {self.api_key}"
                     }
+                    return True
                 else:
                     log(f"Error getting api key. Response: {r.content}", "error")
             except Exception as e:
                 log(f"Failed to get API key. Attempt {attempts} of {self.retries}. Error {e}")
                 attempts += 1
                 sleep(3)
+        return False
 
     def _get_type_fields(self, type_name: str):
         query = '''query MyQuery {
@@ -176,5 +178,5 @@ __type(name: "TYPENAME") {
                 headers=self.headers,
                 verify=False
             )
-            super().__init__(retries=retries, transport=api_transport, fetch_schema_from_transport=True)
+            self.graphql = Client(retries=retries, transport=api_transport, fetch_schema_from_transport=True)
 

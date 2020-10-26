@@ -10,7 +10,8 @@ gql = "*"
 pyjwt = "*"
 kubernetes = "*"
 requests = "*"
-flask="*"
+flask = "*"
+python-dateutil = "*"
 
 [requires]
 python_version = "3.8"

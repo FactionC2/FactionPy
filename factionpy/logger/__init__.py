@@ -44,7 +44,7 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 
-def log(message, level="info"):
+def log(message: str, level="info"):
     """
     Takes a string and prints it to stdout all fancy.
 

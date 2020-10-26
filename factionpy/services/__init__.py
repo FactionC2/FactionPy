@@ -1,9 +1,64 @@
+import datetime
+import json
+from typing import Dict
+
+import dateutil.parser
 import requests
+
 from factionpy.config import AUTH_ENDPOINT
 from factionpy.logger import log
 
 
-def validate_authorization_header(header_value: str, verify_ssl: bool = True):
+class HasuraRequest:
+    """
+    An object representing the JSON that Hasura sends to a webhook.
+
+    Args:
+        body (str): The JSON string that Hasura sent for this operation
+
+    Attributes:
+        id (str): The request ID
+        trigger_name (str): The name of the trigger that generated the request
+        table_name (str): The table that the request is associated with
+        table_schema (str): The schema of the table that the request is associated with
+        created_at (datetime): When the request was generated
+        operation (str): What type of operation was performed (INSERT, UPDATE, DELETE)
+        session_variables (Dict[str, object]): Session variables associated with the request (X-Hasura-Role, etc)
+        old_data (Dict[str, object]): The original data (if INSERT, this is null)
+        new_data (Dict[str, object]): The new data
+    """
+    id: str = None
+    trigger_name: str = None
+    table_name: str = None
+    table_schema: str = None
+    created_at: datetime = None
+    operation: str = None
+    session_variables: Dict[str, object] = None
+    old_data: Dict[str, object] = None
+    new_data: Dict[str, object] = None
+
+    def __init__(self, body: str):
+        """
+        :param body: The JSON string that Hasura sent for this operation
+        """
+        j = json.loads(body)
+        self.id = j['id']
+        self.trigger_name = j['trigger']['name']
+        self.table_name = j['table']['name']
+        self.table_schema = j['table']['schema']
+        self.created_at = dateutil.parser.parse(j['created_at'])
+        self.operation = j['event']['op']
+        self.session_variables = j['event']['session_variables']
+        self.old_data = j['event']['data']['old']
+        self.new_data = j['event']['data']['new']
+
+
+def validate_authorization_header(header_value: str, verify_ssl: bool = True) -> Dict[str, str]:
+    """
+    :param header_value: The value of the Authorization heard to be verified
+    :param verify_ssl: Whether to require a valid SSL cert on the Authentication endpoint or not
+    :return: {"success": "<true|false>", "result": "<response from authentication endpoint>"}
+    """
     log(f"got header {header_value}", "debug")
     success = "false"
     result = None

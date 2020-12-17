@@ -1,6 +1,8 @@
 import os
+from distutils.util import strtobool
 from factionpy.kubernetes import CONNECTED_TO_KUBERNETES, get_secret, get_ingress_host
 from factionpy.logger import log
+
 
 HOST = None
 
@@ -20,8 +22,11 @@ else:
     FILES_ENDPOINT = f"http://faction-files:5000/"
     FACTION_JWT_SECRET = os.environ.get("FACTION_JWT_SECRET", None)
 
+VERIFY_SSL = bool(strtobool(os.environ.get("FACTION_VERIFY_SSL", "True")))
+
 log(f"config value QUERY_ENDPOINT:\t {QUERY_ENDPOINT}", "debug")
 log(f"config value GRAPHQL_ENDPOINT:\t {GRAPHQL_ENDPOINT}", "debug")
 log(f"config value AUTH_ENDPOINT:\t {AUTH_ENDPOINT}", "debug")
 log(f"config value FILES_ENDPOINT:\t {FILES_ENDPOINT}", "debug")
 log(f"config value FACTION_JWT_SECRET:\t {FACTION_JWT_SECRET}", "debug")
+log(f"config value VERIFY_SSL:\t {VERIFY_SSL}", "debug")

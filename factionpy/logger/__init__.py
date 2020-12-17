@@ -1,9 +1,11 @@
 import os
 import inspect
 import logging
+from typing import Dict, Union
 
 import sys
 from datetime import datetime
+
 
 class bcolors:
     HEADER = '\033[95m'
@@ -70,7 +72,7 @@ def log(message: str, level="info"):
                      f"error, critical, and debug.{bcolors.ENDC}")
 
 
-def error_out(message: str):
+def error_out(message: str) -> Dict[str, Union[str, bool]]:
     log(message, "error")
     return {
         "success": False,

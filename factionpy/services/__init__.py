@@ -5,7 +5,7 @@ from typing import Dict
 import dateutil.parser
 import requests
 
-from factionpy.config import AUTH_ENDPOINT
+from factionpy.config import AUTH_ENDPOINT, VERIFY_SSL
 from factionpy.logger import log
 
 
@@ -37,23 +37,22 @@ class HasuraRequest:
     old_data: Dict[str, object] = None
     new_data: Dict[str, object] = None
 
-    def __init__(self, body: str):
+    def __init__(self, hasura_json: dict):
         """
-        :param body: The JSON string that Hasura sent for this operation
+        :param hasura_json: Dictionary representing that JSON string that Hasura sent for this operation
         """
-        j = json.loads(body)
-        self.id = j['id']
-        self.trigger_name = j['trigger']['name']
-        self.table_name = j['table']['name']
-        self.table_schema = j['table']['schema']
-        self.created_at = dateutil.parser.parse(j['created_at'])
-        self.operation = j['event']['op']
-        self.session_variables = j['event']['session_variables']
-        self.old_data = j['event']['data']['old']
-        self.new_data = j['event']['data']['new']
+        self.id = hasura_json['id']
+        self.trigger_name = hasura_json['trigger']['name']
+        self.table_name = hasura_json['table']['name']
+        self.table_schema = hasura_json['table']['schema']
+        self.created_at = dateutil.parser.parse(hasura_json['created_at'])
+        self.operation = hasura_json['event']['op']
+        self.session_variables = hasura_json['event']['session_variables']
+        self.old_data = hasura_json['event']['data']['old']
+        self.new_data = hasura_json['event']['data']['new']
 
 
-def validate_authorization_header(header_value: str, verify_ssl: bool = True) -> Dict[str, str]:
+def validate_authorization_header(header_value: str) -> Dict[str, str]:
     """
     :param header_value: The value of the Authorization heard to be verified
     :param verify_ssl: Whether to require a valid SSL cert on the Authentication endpoint or not
@@ -66,7 +65,7 @@ def validate_authorization_header(header_value: str, verify_ssl: bool = True) ->
         headers = {"Authorization": header_value}
         url = f"{AUTH_ENDPOINT}/verify/"
         log(f"using url: {url}", "debug")
-        r = requests.get(url, headers=headers, verify=verify_ssl).json()
+        r = requests.get(url, headers=headers, verify=VERIFY_SSL).json()
         log(f"got response {r}", "debug")
         if r['success'] == "true":
             success = "true"

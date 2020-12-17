@@ -50,18 +50,12 @@ class FactionApp(object):
         """
         log(f"Checking if authenticated..", "debug")
         user = User()
-        verify_ssl_value = True
-        verify_ssl = os.environ.get("FACTION_VERIFY_SSL", None)
-
-        if verify_ssl:
-            if verify_ssl.lower() == "false":
-                verify_ssl_value = False
 
         try:
             auth_header = request.headers.get("Authorization", None)
             if auth_header:
                 log(f"got auth_header", "debug")
-                verified_header = validate_authorization_header(auth_header, verify_ssl=verify_ssl_value)
+                verified_header = validate_authorization_header(auth_header)
                 if verified_header["success"] == "true":
                     log(f"got verified_header: {verified_header}", "debug")
                     user_data = verified_header["result"]
@@ -107,6 +101,3 @@ class User(object):
         self.created = created
         self.enabled = enabled
         self.visible: visible
-
-
-

@@ -1,12 +1,13 @@
 import os
 import requests
+from typing import Dict, Union
 
 from factionpy.logger import log, error_out
 from factionpy.config import FILES_ENDPOINT
 
 
 def upload_file(upload_type: str, file_path: str, api_key: str, description: str = None, agent_id: str = None,
-                source_file_path: str = None, metadata: str = None):
+                source_file_path: str = None, metadata: str = None) -> Dict[str, Union[str, bool]]:
     """
     Uploads a file to Faction.
     :param upload_type: what type of file is being uploaded (payload, agent_upload, user_upload, etc)

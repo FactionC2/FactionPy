@@ -4,8 +4,9 @@ import jwt
 import requests
 from gql import Client, gql
 from gql.transport.requests import RequestsHTTPTransport
+from typing import Dict, Union, Optional
 
-from factionpy.config import FACTION_JWT_SECRET, GRAPHQL_ENDPOINT, QUERY_ENDPOINT, AUTH_ENDPOINT
+from factionpy.config import FACTION_JWT_SECRET, GRAPHQL_ENDPOINT, QUERY_ENDPOINT, AUTH_ENDPOINT, VERIFY_SSL
 from factionpy.files import upload_file
 from factionpy.logger import log, error_out
 
@@ -17,30 +18,36 @@ class FactionClient:
     retries: 20
     headers: {}
 
-    def _request_api_key(self):
+    def request_api_key(self, key_name: str) -> str:
         auth_url = AUTH_ENDPOINT + "/service/"
         log(f"Authenticating to {auth_url} using JWT secret")
-        key = jwt.encode({"key_name": self.client_id}, FACTION_JWT_SECRET, algorithm="HS256").decode('utf-8')
-        log(f"Encoded secret: {key}", "debug")
+
+        jwt_key = jwt.encode({"key_name": key_name}, FACTION_JWT_SECRET, algorithm="HS256").decode('utf-8')
+        log(f"Using JWT Key: {jwt_key}", "debug")
 
         attempts = 1
-        while self.api_key is None and attempts <= self.retries:
+        api_key = None
+        while api_key is None and attempts <= self.retries:
             try:
-                r = requests.get(auth_url, headers={'Authorization': f"Bearer {key}"}, verify=False)
+                r = requests.get(auth_url, headers={'Authorization': f"Bearer {jwt_key}"}, verify=VERIFY_SSL)
                 if r.status_code == 200:
-                    self.api_key = r.json().get("api_key")
-                    self.headers = {
-                        "Content-type": "application/json",
-                        "Authorization": f"Bearer {self.api_key}"
-                    }
-                    return True
+                    api_key = r.json().get("api_key")
+                    return api_key
                 else:
                     log(f"Error getting api key. Response: {r.content}", "error")
             except Exception as e:
                 log(f"Failed to get API key. Attempt {attempts} of {self.retries}. Error {e}")
                 attempts += 1
                 sleep(3)
-        return False
+        # Return an empty string if we run out of attempts
+        log(f"Could not create API key within {self.retries} attempts", "error")
+        return ""
+
+    def _set_headers(self):
+        self.headers = {
+            "Content-type": "application/json",
+            "Authorization": f"Bearer {self.api_key}"
+        }
 
     def _get_type_fields(self, type_name: str):
         query = '''query MyQuery {
@@ -59,7 +66,7 @@ __type(name: "TYPENAME") {
   }
 }'''.replace("TYPENAME", type_name)
         gquery = gql(query)
-        result = self.execute(gquery)
+        result = self.graphql.execute(gquery)
         results = []
         for item in result["__type"]["fields"]:
             name = item['name']
@@ -76,7 +83,7 @@ __type(name: "TYPENAME") {
             }))
         return results
 
-    def create_webhook(self, webhook_name, table_name, webhook_url):
+    def create_webhook(self, webhook_name, table_name, webhook_url) -> Dict[str, Union[bool, str]]:
         """
         Registers a webhook with Faction
         :param webhook_name: The name of your webhook (must be unique)
@@ -84,13 +91,14 @@ __type(name: "TYPENAME") {
         :param webhook_url: The URL for the webhook
         :return: {"success": bool, "message": str}
         """
-        fields = self._get_type_fields(table_name)
-        columns = []
-        for field in fields:
-            if field["type"]:
-                columns.append(field['name'])
-        key = jwt.encode({"service_name": self.client_id}, FACTION_JWT_SECRET, algorithm="HS256")
-        webhook_api_key = key
+        webhook_api_key = self.request_api_key(webhook_name)
+
+        if not webhook_api_key:
+            return dict({
+                "success": False,
+                "message": "Failed to create webhook api key"
+            })
+
         query = '''{
              "type": "create_event_trigger",
              "args": {
@@ -101,11 +109,11 @@ __type(name: "TYPENAME") {
                },
               "webhook": "WEBHOOK_URL",
                "insert": {
-                 "columns": COLUMNS
+                 "columns": "*"
                },
                "enable_manual": false,
                "update": {
-                   "columns": COLUMNS
+                   "columns": "*"
                   },
                "retry_conf": {
                  "num_retries": 10,
@@ -121,16 +129,14 @@ __type(name: "TYPENAME") {
              }
            }'''
 
-        populated_query = query\
-            .replace("WEBHOOK_NAME", webhook_name)\
-            .replace("TABLE_NAME", table_name)\
-            .replace("WEBHOOK_URL", webhook_url)\
-            .replace("WEBHOOK_API_KEY", webhook_api_key)\
-            .replace("COLUMNS", str(columns).replace("'", '"'))
+        populated_query = query.replace("WEBHOOK_NAME", webhook_name)
+        populated_query = populated_query.replace("TABLE_NAME", table_name)
+        populated_query = populated_query.replace("WEBHOOK_URL", webhook_url)
+        populated_query = populated_query.replace("WEBHOOK_API_KEY", webhook_api_key)
 
         url = QUERY_ENDPOINT
         headers = {"Authorization": f"Bearer {self.api_key}", "content-type": "application/json"}
-        r = requests.post(url, data=populated_query, headers=headers, verify=False)
+        r = requests.post(url, data=populated_query, headers=headers, verify=VERIFY_SSL)
         if r.status_code == 200:
             return dict({
                 "success": True,
@@ -143,7 +149,7 @@ __type(name: "TYPENAME") {
             })
 
     def upload_file(self, upload_type: str, file_path: str, description: str = None, agent_id: str = None,
-                    source_file_path: str = None, metadata: str = None):
+                    source_file_path: str = None, metadata: str = None) -> Dict[str, Union[str, bool]]:
         """
         Uploads a file to Faction.
         :param upload_type: what type of file is being uploaded (payload, agent_upload, user_upload, etc)
@@ -168,15 +174,17 @@ __type(name: "TYPENAME") {
         self.client_id = client_id
         self.auth_endpoint = auth_endpoint
         self.api_endpoint = api_endpoint
-        self.api_key = None
         self.retries = retries
+        self.api_key = self.request_api_key(client_id)
 
-        if self._request_api_key():
+        if self.api_key:
+            self._set_headers()
             api_transport = RequestsHTTPTransport(
                 url=api_endpoint,
                 use_json=True,
                 headers=self.headers,
-                verify=False
+                verify=VERIFY_SSL
             )
             self.graphql = Client(retries=retries, transport=api_transport, fetch_schema_from_transport=True)
-
+        else:
+            log(f"Could not get API key for Faction client.", "error")

@@ -3,7 +3,7 @@ import requests
 from typing import Dict, Union
 
 from factionpy.logger import log, error_out
-from factionpy.config import FILES_ENDPOINT
+from factionpy.config import FILES_ENDPOINT, VERIFY_SSL
 
 
 def upload_file(upload_type: str, file_path: str, api_key: str, description: str = None, agent_id: str = None,
@@ -24,18 +24,17 @@ def upload_file(upload_type: str, file_path: str, api_key: str, description: str
         try:
             file = {'file': open(file_path, 'rb')}
             headers = {
-                        "Content-type": "application/json",
                         "Authorization": f"Bearer {api_key}"
                     }
             file_info = {
-                'upload_type': upload_type,
+                'type': upload_type,
                 'description': description,
                 'agent_id': agent_id,
                 'source_file_path': source_file_path,
                 'metadata': metadata
             }
             log(f"Sending the following to {FILES_ENDPOINT}: {file_info}", "debug")
-            resp = requests.post(FILES_ENDPOINT, headers=headers, files=file, data=file_info)
+            resp = requests.post(FILES_ENDPOINT, headers=headers, files=file, data=file_info, verify=VERIFY_SSL)
         except Exception as e:
             return error_out(f"Error uploading file {file_path}. Error: {e}")
 

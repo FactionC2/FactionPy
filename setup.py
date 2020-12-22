@@ -33,12 +33,16 @@ setup(
     version=VERSION,
     author="The Faction Team",
     author_email="team@factionc2.com",
-    description="Common Library for Python based Faction services.",
+    description="Common Library for Python based Faction applications.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/FactionC2/factionpy",
     packages=find_packages(),
     license="MIT",
     classifiers=[],
-    python_requires='>=3.7', install_requires=['bcrypt', 'pyjwt', 'kubernetes', 'gql', 'flask', 'requests', 'python-dateutil']
+    python_requires='>=3.8',
+    install_requires=['bcrypt', 'pyjwt', 'kubernetes', 'gql', 'httpx', 'pydantic', 'python-dateutil'],
+    extras_require={
+        'fastapi': ["fastapi"]
+    }
 )

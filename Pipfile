@@ -9,9 +9,9 @@ verify_ssl = true
 gql = "*"
 pyjwt = "*"
 kubernetes = "*"
-requests = "*"
-flask = "*"
 python-dateutil = "*"
+httpx = "*"
+pydantic = "*"
 
 [requires]
 python_version = "3.8"

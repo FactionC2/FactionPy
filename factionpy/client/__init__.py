@@ -19,11 +19,10 @@ class FactionClient:
     api_key: None
     auth_endpoint: None
     client_id: None
-    graphql: None
     retries: 20
     headers: {}
 
-    async def request_api_key(self, key_name: str) -> Optional[str]:
+    def request_api_key(self, key_name: str) -> Optional[str]:
         auth_url = AUTH_ENDPOINT + "/service/"
         log(f"Authenticating to {auth_url} using JWT secret")
 
@@ -34,7 +33,7 @@ class FactionClient:
         api_key = None
         while api_key is None and attempts <= self.retries:
             try:
-                r = await http.get(auth_url, headers={'Authorization': f"Bearer {jwt_key}"})
+                r = httpx.get(auth_url, headers={'Authorization': f"Bearer {jwt_key}"}, verify=VERIFY_SSL)
                 if r.status_code == 200:
                     api_key = r.json().get("api_key")
                     return api_key
@@ -188,17 +187,16 @@ __type(name: "TYPENAME") {
         else:
             return error_out("Could not upload file, no API key defined on client.")
 
-    @classmethod
-    async def create(cls, client_id,
-                     retries=20,
-                     api_endpoint=GRAPHQL_ENDPOINT,
-                     auth_endpoint=AUTH_ENDPOINT):
-        self = FactionClient()
+    def __init__(self,
+                 client_id,
+                 retries=20,
+                 api_endpoint=GRAPHQL_ENDPOINT,
+                 auth_endpoint=AUTH_ENDPOINT):
         self.client_id = client_id
         self.auth_endpoint = auth_endpoint
         self.api_endpoint = api_endpoint
         self.retries = retries
-        self.api_key = await self.request_api_key(client_id)
+        self.api_key = self.request_api_key(client_id)
 
         if self.api_key:
             self._set_headers()

@@ -16,7 +16,7 @@ http = httpx.AsyncClient(verify=VERIFY_SSL)
 
 class FileProperties(BaseModel):
     id: Optional[UUID]
-    description: str
+    description: Optional[str]
     type: str
     agent_id: Optional[UUID]
     user_id: Optional[UUID]
@@ -24,6 +24,7 @@ class FileProperties(BaseModel):
     source_file_path: Optional[str]
     created: Optional[datetime]
     last_downloaded: Optional[datetime]
+    hash: Optional[str]
     enabled: bool
     url: Optional[str]
     metadata: Optional[str]

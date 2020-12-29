@@ -14,13 +14,19 @@ if CONNECTED_TO_KUBERNETES:
     AUTH_ENDPOINT = f"https://{HOST}/api/v1/auth"
     FILES_ENDPOINT = f"https://{HOST}/api/v1/files"
     FACTION_JWT_SECRET = get_secret("auth-secrets", "jwt-secret")
+    FACTION_ADMIN_PASSWORD = get_secret("auth-secrets", "admin-password")
+    FACTION_SYSTEM_PASSWORD = get_secret("auth-secrets", "system-password")
+    FACTION_DB_URI = get_secret("db-secrets", "db-url")
 else:
     log(f"Using hardcoded config")
     QUERY_ENDPOINT = f"http://faction-hasura:8080/v1/query"
     GRAPHQL_ENDPOINT = f"http://faction-hasura:8080/v1/graphql"
-    AUTH_ENDPOINT = f"http://faction-auth:5000"
-    FILES_ENDPOINT = f"http://faction-files:5000/"
+    AUTH_ENDPOINT = f"http://faction-auth:8000"
+    FILES_ENDPOINT = f"http://faction-files:8000/"
     FACTION_JWT_SECRET = os.environ.get("FACTION_JWT_SECRET", None)
+    FACTION_ADMIN_PASSWORD = os.environ.get("FACTION_ADMIN_PASSWORD", None)
+    FACTION_SYSTEM_PASSWORD = os.environ.get("FACTION_SYSTEM_PASSWORD", None)
+    FACTION_DB_URI = os.environ.get("FACTION_DB_URI", None)
 
 VERIFY_SSL = bool(strtobool(os.environ.get("FACTION_VERIFY_SSL", "True")))
 

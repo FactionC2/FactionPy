@@ -1,13 +1,10 @@
-from uuid import UUID
-from datetime import datetime
 from typing import Optional
 from distutils.util import strtobool
-
-from pydantic import BaseModel
 import httpx
 
 from factionpy.logger import log
 from factionpy.config import AUTH_ENDPOINT
+from factionpy.models import User
 
 VERIFY_SSL = False
 
@@ -32,18 +29,6 @@ standard_admin = [
     'admin',
     'super-user'
 ]
-
-
-class User(BaseModel):
-    id: UUID
-    username: str
-    role: str
-    last_login: datetime
-    enabled: bool
-    visible: bool
-    created: datetime
-    api_key: str
-    api_key_description: str
 
 
 async def validate_api_key(api_key: str) -> Optional[User]:

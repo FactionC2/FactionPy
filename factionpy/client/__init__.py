@@ -35,8 +35,13 @@ class FactionClient:
             try:
                 r = httpx.get(auth_url, headers={'Authorization': f"Bearer {jwt_key}"}, verify=VERIFY_SSL)
                 if r.status_code == 200:
-                    api_key = r.json().get("api_key")
-                    return api_key
+                    api_key = r.json().get("access_key")
+                    if api_key:
+                        api_key_name, api_key_value = api_key.split('.', 1)
+                        log(f"Got API key named: {api_key_name}", "debug")
+                        return api_key
+                    else:
+                        log(f"Received empty or invalid API key.", "error")
                 else:
                     log(f"Error getting api key. Response: {r.content}", "error")
             except Exception as e:
@@ -209,4 +214,5 @@ __type(name: "TYPENAME") {
             )
             self.graphql = Client(transport=api_transport, fetch_schema_from_transport=True)
         else:
-            log(f"Could not get API key for Faction client.", "error")
+            raise AttributeError(f"Could not get API key for Faction client.")
+
